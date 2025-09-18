@@ -1,0 +1,42 @@
+[
+  {
+    "Nome": "Corte de Cabelo Masculino",
+    "Descricao": "Corte tradicional com tesoura e/ou máquina, inclui lavagem e finalização.",
+    "PrecoEmCentavos": 4000
+  },
+  {
+    "Nome": "Corte e Barba",
+    "Descricao": "Combo completo de corte de cabelo e design de barba.",
+    "PrecoEmCentavos": 7500
+  },
+  {
+    "Nome": "Design de Barba",
+    "Descricao": "Modelagem da barba com navalha e/ou máquina, inclui toalha quente.",
+    "PrecoEmCentavos": 4000
+  },
+  {
+    "Nome": "Corte Infantil",
+    "Descricao": "Corte especial para crianças de até 12 anos.",
+    "PrecoEmCentavos": 3000
+  },
+  {
+    "Nome": "Pezinho / Acabamento",
+    "Descricao": "Acabamento do corte na nuca e costeletas.",
+    "PrecoEmCentavos": 2000
+  },
+  {
+    "Nome": "Hidratação de Barba",
+    "Descricao": "Aplicação de óleos e balms para hidratar os fios da barba.",
+    "PrecoEmCentavos": 3000
+  },
+  {
+    "Nome": "Coloração Capilar",
+    "Descricao": "Aplicação de tintura para cobrir fios brancos ou mudar a cor.",
+    "PrecoEmCentavos": 9000
+  },
+  {
+    "Nome": "Design de Sobrancelha",
+    "Descricao": "Limpeza e modelagem da sobrancelha na navalha ou pinça.",
+    "PrecoEmCentavos": 2500
+  }
+]
