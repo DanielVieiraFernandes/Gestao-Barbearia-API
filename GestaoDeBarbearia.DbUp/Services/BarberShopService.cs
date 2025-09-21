@@ -130,7 +130,7 @@ internal class BarberShopService
             sql.Append("CREATE TABLE barber_shop_appointments (");
             sql.Append("id BIGSERIAL PRIMARY KEY, ");
             sql.Append("appointmentdatetime TIMESTAMP WITHOUT TIME ZONE NOT NULL, ");
-            sql.Append("serviceId BIGINT NOT NULL, ");
+            //sql.Append("serviceId BIGINT NOT NULL, ");
             sql.Append("clientId BIGINT NULL DEFAULT NULL, ");
             sql.Append("clientname VARCHAR(200) NULL DEFAULT NULL, ");
             sql.Append("clientphone VARCHAR(15) NULL DEFAULT NULL, ");
@@ -138,11 +138,10 @@ internal class BarberShopService
             sql.Append("status INT NOT NULL DEFAULT 1, ");
             sql.Append("serviceprice BIGINT NOT NULL, ");
             sql.Append("paymenttype INT NOT NULL, ");
-            sql.Append("paidat TIMESTAMP WITHOUT TIME ZONE NOT NULL, ");
-            sql.Append("createdat TIMESTAMP WITHOUT TIME ZONE NOT NULL, ");
+            sql.Append("paidat TIMESTAMP WITHOUT TIME ZONE NULL DEFAULT NULL, ");
+            sql.Append("createdat TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(), ");
             sql.Append("observations TEXT NULL DEFAULT NULL, ");
             sql.Append("CONSTRAINT fk_appointment_clients FOREIGN KEY (clientId) REFERENCES barber_shop_clients (id) ON UPDATE CASCADE,");
-            sql.Append("CONSTRAINT fk_appointment_services FOREIGN KEY (serviceId) REFERENCES barber_shop_services (id) ON UPDATE CASCADE,");
             sql.Append("CONSTRAINT fk_appointment_employees FOREIGN KEY (employeeId) REFERENCES barber_shop_employees (id) ON UPDATE CASCADE ");
             sql.Append(");");
 

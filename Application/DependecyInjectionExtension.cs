@@ -1,0 +1,11 @@
+﻿using GestaoDeBarbearia.Application.UseCases;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace GestaoDeBarbearia.Application;
+public static class DependecyInjectionExtension
+{
+    public static void AddApplication(this IServiceCollection services)
+    {
+        services.AddScoped<ScheduleServiceUseCase>();
+    }
+}
