@@ -15,12 +15,19 @@ public class AppointmentsController : ControllerBase
         [FromBody] RequestScheduleServiceJson request)
     {
         if (!ModelState.IsValid)
-        {
             return BadRequest(ModelState);
-        }
 
         var response = await useCase.Execute(request);
 
         return Created(string.Empty, response);
+    }
+
+    [HttpPatch("{id:long}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Update([FromServices] ConfirmScheduleUseCase useCase, [FromRoute] long id)
+    {
+        await useCase.Execute(id);
+
+        return NoContent();
     }
 }

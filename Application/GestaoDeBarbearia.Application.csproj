@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GestaoDeBarbearia.Communication\GestaoDeBarbearia.Communication.csproj" />
     <ProjectReference Include="..\GestaoDeBarbearia.Domain\GestaoDeBarbearia.Domain.csproj" />
+    <ProjectReference Include="..\GestaoDeBarbearia.Exception\GestaoDeBarbearia.Exception.csproj" />
   </ItemGroup>
 
 </Project>

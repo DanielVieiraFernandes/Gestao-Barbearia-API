@@ -5,5 +5,6 @@ public class Service
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public long Price { get; set; }
-    public bool Active { get; set; }
+    public int DurationMinutes { get; set; }
+    public bool IsActive { get; set; }
 }

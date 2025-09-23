@@ -40,7 +40,8 @@ internal class BarberShopService
             sql.Append("name VARCHAR(100) NOT NULL, ");
             sql.Append("description VARCHAR(255) NOT NULL, ");
             sql.Append("price BIGINT NOT NULL, ");
-            sql.Append("active BOOLEAN DEFAULT TRUE");
+            sql.Append("durationminutes INT NOT NULL, ");
+            sql.Append("isactive BOOLEAN DEFAULT TRUE");
             sql.Append("); ");
 
             await connection.ExecuteAsync(sql.ToString());
@@ -70,7 +71,7 @@ internal class BarberShopService
                 Console.WriteLine("Preenchendo tabela de serviços...");
                 Console.ResetColor();
 
-                sql.Append("INSERT INTO barber_shop_services (name, description, price) VALUES ");
+                sql.Append("INSERT INTO barber_shop_services (name, description, price, durationminutes) VALUES ");
 
                 DynamicParameters parametros = new();
 
@@ -81,12 +82,14 @@ internal class BarberShopService
                     string nameParamName = $"@name{paramId}";
                     string descriptionParamName = $"@description{paramId}";
                     string priceParamName = $"@price{paramId}";
+                    string durationParamName = $"@duration{paramId}";
 
-                    sql.Append($"({nameParamName}, {descriptionParamName}, {priceParamName})");
+                    sql.Append($"({nameParamName}, {descriptionParamName}, {priceParamName}, {durationParamName})");
 
                     parametros.Add(nameParamName, servico.name);
                     parametros.Add(descriptionParamName, servico.description);
                     parametros.Add(priceParamName, servico.price);
+                    parametros.Add(durationParamName, servico.durationMinutes);
 
                     if (paramId < servicosJson.Count)
                         sql.Append(", ");
@@ -112,6 +115,42 @@ internal class BarberShopService
         }
     }
 
+    public async Task CreateBarberShopAppointmentsServicesTable()
+    {
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("Criando tabela intermediária de agendamentos e serviços...");
+        Console.ResetColor();
+
+        try
+        {
+            StringBuilder sql = new();
+
+            sql.Append("DROP TABLE IF EXISTS barber_shop_appointments_services CASCADE;");
+
+            await connection.ExecuteAsync(sql.ToString());
+
+            sql.Clear();
+
+            sql.Append("CREATE TABLE barber_shop_appointments_services ( ");
+            sql.Append("appointmentid BIGINT NOT NULL, ");
+            sql.Append("serviceid BIGINT NOT NULL ");
+            sql.Append(");");
+
+            await connection.ExecuteAsync(sql.ToString());
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Tabela intermediária de agendamentos e serviços criada com sucesso!");
+            Console.ResetColor();
+        }
+        catch (Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Exceção no método {MethodBase.GetCurrentMethod()}. Erro: \n {ex.Message}");
+            Console.ResetColor();
+        }
+
+    }
+
     public async Task CreateBarberShopAppointmentsTable()
     {
         Console.ForegroundColor = ConsoleColor.Blue;
@@ -130,11 +169,10 @@ internal class BarberShopService
             sql.Append("CREATE TABLE barber_shop_appointments (");
             sql.Append("id BIGSERIAL PRIMARY KEY, ");
             sql.Append("appointmentdatetime TIMESTAMP WITHOUT TIME ZONE NOT NULL, ");
-            //sql.Append("serviceId BIGINT NOT NULL, ");
             sql.Append("clientId BIGINT NULL DEFAULT NULL, ");
             sql.Append("clientname VARCHAR(200) NULL DEFAULT NULL, ");
             sql.Append("clientphone VARCHAR(15) NULL DEFAULT NULL, ");
-            sql.Append("employeeId BIGINT NULL DEFAULT NULL, ");
+            sql.Append("employeeId BIGINT NOT NULL, ");
             sql.Append("status INT NOT NULL DEFAULT 1, ");
             sql.Append("serviceprice BIGINT NOT NULL, ");
             sql.Append("paymenttype INT NOT NULL, ");

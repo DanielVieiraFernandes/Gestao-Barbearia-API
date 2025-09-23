@@ -7,5 +7,6 @@ public static class DependecyInjectionExtension
     public static void AddApplication(this IServiceCollection services)
     {
         services.AddScoped<ScheduleServiceUseCase>();
+        services.AddScoped<ConfirmScheduleUseCase>();
     }
 }

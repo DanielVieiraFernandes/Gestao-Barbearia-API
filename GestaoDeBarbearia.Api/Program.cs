@@ -1,5 +1,5 @@
 using GestaoDeBarbearia.Api.Filters;
-using GestaoDeBarbearia.Api.Middleware;
+using GestaoDeBarbearia.Api.Middlewares;
 using GestaoDeBarbearia.Application;
 using GestaoDeBarbearia.Infraestructure;
 var builder = WebApplication.CreateBuilder(args);

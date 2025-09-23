@@ -1,7 +1,7 @@
 ﻿
 using System.Globalization;
 
-namespace GestaoDeBarbearia.Api.Middleware;
+namespace GestaoDeBarbearia.Api.Middlewares;
 
 public class CultureMiddleware
 {

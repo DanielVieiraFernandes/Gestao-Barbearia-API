@@ -11,4 +11,7 @@ internal class ServicoJson
 
     [JsonPropertyName("PrecoEmCentavos")]
     public long price { get; set; }
+
+    [JsonPropertyName("DuracaoEmMinutos")]
+    public int durationMinutes { get; set; }
 }

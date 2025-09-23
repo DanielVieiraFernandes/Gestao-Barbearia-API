@@ -78,18 +78,19 @@ async Task CreateTablesIndividual()
         Utils.ShowHeader();
 
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine("-> 7 - RETORNAR AO MENU PRINCIPAL\n");
+        Console.WriteLine("-> 8 - RETORNAR AO MENU PRINCIPAL\n");
         Console.ResetColor();
 
         Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine("++++++++++++++++++++++++++++++++++++");
-        Console.WriteLine("| 1 - CRIAR TABELA DE SERVIÇOS     |");
-        Console.WriteLine("| 2 - CRIAR TABELA DE AGENDAMENTOS |");
-        Console.WriteLine("| 3 - CRIAR TABELA DE CLIENTES     |");
-        Console.WriteLine("| 4 - CRIAR TABELA DE FUNCIONÁRIOS |");
-        Console.WriteLine("| 5 - CRIAR TABELA DE PRODUTOS     |");
-        Console.WriteLine("| 6 - CRIAR TABELA DE DESPESAS     |");
-        Console.WriteLine("++++++++++++++++++++++++++++++++++++\n\n");
+        Console.WriteLine("+++++++++++++++++++++++++++++++++++++++");
+        Console.WriteLine("| 1 - CRIAR TABELA DE SERVIÇOS        |");
+        Console.WriteLine("| 2 - CRIAR TABELA DE AGENDAMENTOS    |");
+        Console.WriteLine("| 3 - CRIAR TABELA DE CLIENTES        |");
+        Console.WriteLine("| 4 - CRIAR TABELA DE FUNCIONÁRIOS    |");
+        Console.WriteLine("| 5 - CRIAR TABELA DE PRODUTOS        |");
+        Console.WriteLine("| 6 - CRIAR TABELA DE DESPESAS        |");
+        Console.WriteLine("| 7 - CRIAR TABELA INTERMEDIÁRIA (sa) |");
+        Console.WriteLine("+++++++++++++++++++++++++++++++++++++++\n\n");
         Console.ResetColor();
 
         Console.Write("Escolha uma opção: ");
@@ -125,6 +126,13 @@ async Task CreateTablesIndividual()
                 Console.Clear();
                 break;
             case "7":
+                Console.Clear();
+                await barberShopService.CreateBarberShopAppointmentsServicesTable();
+                Console.WriteLine("Pressione qualquer tecla para retornar ao menu de criação de tabelas individuais.");
+                Utils.PauseAndClean();
+                Console.Clear();
+                break;
+            case "8":
                 op = 5;
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("Retornando ao menu base...");

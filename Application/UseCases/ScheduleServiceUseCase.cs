@@ -2,6 +2,7 @@
 using GestaoDeBarbearia.Communication.Responses;
 using GestaoDeBarbearia.Domain.Entities;
 using GestaoDeBarbearia.Domain.Repositories;
+using GestaoDeBarbearia.Exception.ExceptionsBase;
 
 namespace GestaoDeBarbearia.Application.UseCases;
 public class ScheduleServiceUseCase
@@ -14,6 +15,11 @@ public class ScheduleServiceUseCase
 
     public async Task<ResponseScheduledServiceJson> Execute(RequestScheduleServiceJson request)
     {
+        bool isOcupied = await scheduleRepository.IsTimeSlotOccupied(request.AppointmentDateTime, request.EmployeeId);
+
+        if (isOcupied)
+            throw new AppointmentTimeBusyException("Esse horário está ocupado!");
+
         Appointment appointment = new()
         {
             AppointmentDateTime = request.AppointmentDateTime,
@@ -25,7 +31,7 @@ public class ScheduleServiceUseCase
             PaymentType = request.PaymentType
         };
 
-        await scheduleRepository.Create(appointment);
+        await scheduleRepository.Create(appointment, request.ServiceIds);
 
         return new ResponseScheduledServiceJson
         {
