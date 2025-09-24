@@ -1,5 +1,7 @@
 ﻿using Dapper;
 using GestaoDeBarbearia.Domain.Entities;
+using GestaoDeBarbearia.Domain.Enums;
+using GestaoDeBarbearia.Domain.Pagination;
 using GestaoDeBarbearia.Domain.Repositories;
 using GestaoDeBarbearia.Exception.ExceptionsBase;
 using GestaoDeBarbearia.Infraestructure.Utils;
@@ -20,6 +22,18 @@ public class ScheduleRepository : IScheduleRepository
         await using NpgsqlConnection connection = await dbFunctions.CreateNewConnection();
 
         StringBuilder sql = new();
+
+        sql.Append("SELECT * FROM barber_shop_services WHERE id = ANY(@ServiceIds) AND isactive = TRUE");
+
+        var services = await connection.QueryAsync<Service>(sql.ToString(), new { ServiceIds });
+
+        if (services is null || !services.Any())
+            throw new NotFoundException("Os serviços selecionados não existem ou não estão disponíveis");
+
+        // CALCULA O PREÇO TOTAL COM BASE NOS SERVIÇOS
+        appointment.ServicePrice = services.Sum(s => s.Price);
+
+        sql.Clear();
 
         sql.Append("INSERT INTO barber_shop_appointments (appointmentdatetime, clientId, clientname, ");
         sql.Append("clientphone,employeeId, serviceprice, paymenttype) ");
@@ -47,10 +61,32 @@ public class ScheduleRepository : IScheduleRepository
         await connection.ExecuteAsync(sql.ToString());
     }
 
-    public Task<List<Appointment>> FindAll()
+    public async Task<List<Appointment>> FindAll(RequestPaginationParamsJson pagination)
     {
-        throw new NotImplementedException();
+        await using var connection = await dbFunctions.CreateNewConnection();
+
+        StringBuilder sql = new();
+
+        DynamicParameters parameters = new();
+
+        sql.Append("SELECT * FROM barber_shop_appointments WHERE id <> 0 ");
+
+        if (pagination.Status is not null)
+        {
+            sql.Append("AND status = @Status ");
+            parameters.Add("Status", pagination.Status);
+        }
+
+        sql.Append($"ORDER BY createdat {pagination.OrderBy.GetEnumDescription()} ");
+
+        var result = await connection.QueryAsync<Appointment>(sql.ToString(), parameters);
+
+        if (result is null)
+            return [];
+
+        return [.. result];
     }
+
 
     public async Task<Appointment?> FindById(long id)
     {
@@ -99,7 +135,7 @@ public class ScheduleRepository : IScheduleRepository
         StringBuilder sql = new();
 
         sql.Append("UPDATE barber_shop_appointments SET appointmentdatetime = @AppointmentDateTime, clientname = @ClientName, ");
-        sql.Append("clientphone = @ClientPhone, paymenttype = @PaymentType, status = @Status WHERE id = @Id ");
+        sql.Append("clientphone = @ClientPhone, paymenttype = @PaymentType, status = @Status, paidat = @PaidAt ,updatedat = @UpdatedAt WHERE id = @Id ");
 
         await connection.ExecuteAsync(sql.ToString(), appointment);
     }
