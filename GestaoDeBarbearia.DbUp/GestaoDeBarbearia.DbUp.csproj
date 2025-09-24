@@ -8,9 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bogus" Version="35.6.3" />
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="dbup" Version="5.0.41" />
     <PackageReference Include="dbup-postgresql" Version="6.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GestaoDeBarbearia.Domain\GestaoDeBarbearia.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

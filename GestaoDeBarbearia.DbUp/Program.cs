@@ -37,7 +37,9 @@ while (op != 3)
     Console.ForegroundColor = ConsoleColor.Yellow;
     Console.WriteLine("1 - CRIAR TABELAS NO BANCO (GERAL)");
     Console.ForegroundColor = ConsoleColor.Cyan;
-    Console.WriteLine("2 - CRIAR TABELAS NO BANCO (INDIVIDUAL)\n");
+    Console.WriteLine("2 - CRIAR TABELAS NO BANCO (INDIVIDUAL)");
+    Console.ForegroundColor = ConsoleColor.DarkYellow;
+    Console.WriteLine("3 - RODAR SEED DE AGENDAMENTOS\n");
     Console.ResetColor();
     Console.Write("Escolha uma opção: ");
 
@@ -52,6 +54,30 @@ while (op != 3)
             await CreateTablesIndividual();
             break;
         case "3":
+            Console.Clear();
+
+            while (true)
+            {
+                Console.WriteLine("Quantos registros deseja inserir?");
+
+                bool isAInt = int.TryParse(Console.ReadLine(), out int numberOfRecords);
+
+                if (!isAInt || numberOfRecords < 1)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Valor inválido, digite novamente: \n");
+                    Console.ResetColor();
+                    continue;
+                }
+
+                await SeedService.RunSeedInAppointments(connection, numberOfRecords);
+                Console.WriteLine("Pressione qualquer tecla para retornar ao menu de criação de tabelas individuais.");
+                Utils.PauseAndClean();
+                break;
+            }
+
+            break;
+        case "4":
             op = 3;
             break;
         default:

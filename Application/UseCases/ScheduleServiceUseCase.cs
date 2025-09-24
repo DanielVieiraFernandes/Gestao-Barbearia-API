@@ -27,7 +27,6 @@ public class ScheduleServiceUseCase
             ClientName = request.ClientName,
             ClientPhone = request.ClientPhone,
             EmployeeId = request.EmployeeId,
-            ServicePrice = request.ServicePrice,
             PaymentType = request.PaymentType
         };
 
@@ -35,9 +34,9 @@ public class ScheduleServiceUseCase
 
         return new ResponseScheduledServiceJson
         {
-            AppointmentDateTime = request.AppointmentDateTime,
-            ServicePrice = request.ServicePrice,
-            EmployeeId = request.EmployeeId
+            AppointmentDateTime = appointment.AppointmentDateTime,
+            ServicePrice = appointment.ServicePrice,
+            EmployeeId = appointment.EmployeeId,
         };
     }
 }

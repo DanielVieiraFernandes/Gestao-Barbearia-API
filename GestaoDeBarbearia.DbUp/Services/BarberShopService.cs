@@ -178,6 +178,7 @@ internal class BarberShopService
             sql.Append("paymenttype INT NOT NULL, ");
             sql.Append("paidat TIMESTAMP WITHOUT TIME ZONE NULL DEFAULT NULL, ");
             sql.Append("createdat TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(), ");
+            sql.Append("updatedat TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(), ");
             sql.Append("observations TEXT NULL DEFAULT NULL, ");
             sql.Append("CONSTRAINT fk_appointment_clients FOREIGN KEY (clientId) REFERENCES barber_shop_clients (id) ON UPDATE CASCADE,");
             sql.Append("CONSTRAINT fk_appointment_employees FOREIGN KEY (employeeId) REFERENCES barber_shop_employees (id) ON UPDATE CASCADE ");
@@ -219,7 +220,7 @@ internal class BarberShopService
             sql.Append("email VARCHAR(255) UNIQUE NOT NULL, ");
             sql.Append("password VARCHAR(255) NOT NULL, ");
             sql.Append("createdat TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(), ");
-            sql.Append("updatedat TIMESTAMP WITHOUT TIME ZONE NOT NULL ");
+            sql.Append("updatedat TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() ");
             sql.Append("); ");
 
             await connection.ExecuteAsync(sql.ToString());
@@ -260,7 +261,7 @@ internal class BarberShopService
             sql.Append("salary BIGINT NOT NULL, ");
             sql.Append("position INT NOT NULL, ");
             sql.Append("createdat TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(), ");
-            sql.Append("updatedat TIMESTAMP WITHOUT TIME ZONE NOT NULL ");
+            sql.Append("updatedat TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() ");
             sql.Append("); ");
 
             await connection.ExecuteAsync(sql.ToString());

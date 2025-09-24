@@ -21,10 +21,6 @@ public class RequestScheduleServiceJson
     public long? ClientId { get; set; }
     public long EmployeeId { get; set; }
 
-    [Required(ErrorMessage = "O preço do serviço não foi informado")]
-    [Range(1, long.MaxValue, ErrorMessage = "O preço do serviço deve ser maior que zero")]
-    public long ServicePrice { get; set; }
-
     [Required(ErrorMessage = "Método de pagamento não informado")]
     [Range(1, int.MaxValue, ErrorMessage = "O método de pagamento não foi informado")]
     public PaymentType PaymentType { get; set; }

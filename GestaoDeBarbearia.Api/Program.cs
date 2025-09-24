@@ -2,11 +2,18 @@ using GestaoDeBarbearia.Api.Filters;
 using GestaoDeBarbearia.Api.Middlewares;
 using GestaoDeBarbearia.Application;
 using GestaoDeBarbearia.Infraestructure;
+using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+    c.SchemaFilter<EnumSchemaFilter>();
+});
 builder.Services.AddMvc(op => op.Filters.Add(typeof(ExceptionFilter)));
 builder.Services.AddRouting(op =>
 {
@@ -24,11 +31,10 @@ builder.Services.AddInfra();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseMiddleware<CultureMiddleware>();
 
