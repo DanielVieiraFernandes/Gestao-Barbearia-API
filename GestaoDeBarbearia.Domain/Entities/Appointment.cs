@@ -15,5 +15,6 @@ public class Appointment
     public PaymentType PaymentType { get; set; }
     public DateTime? PaidAt { get; set; }
     public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
     public string Observations { get; set; } = string.Empty;
 }

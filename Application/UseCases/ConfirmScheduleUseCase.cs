@@ -18,6 +18,9 @@ public class ConfirmScheduleUseCase
         if (appointment is null)
             throw new NotFoundException("Agendamento não encontrado");
 
+        if (appointment.Status != AppointmentStatus.Pending)
+            throw new AppointmentAlreadyConfirmedException("Agendamento já confirmado!");
+
         appointment.Status = AppointmentStatus.Confirmed;
 
         await scheduleRepository.Update(appointment);
