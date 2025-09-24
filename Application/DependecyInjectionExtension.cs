@@ -8,5 +8,7 @@ public static class DependecyInjectionExtension
     {
         services.AddScoped<ScheduleServiceUseCase>();
         services.AddScoped<ConfirmScheduleUseCase>();
+        services.AddScoped<FetchAppointmentsUseCase>();
+        services.AddScoped<MarkServiceAsCompletedUseCase>();
     }
 }

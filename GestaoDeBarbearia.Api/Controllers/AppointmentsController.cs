@@ -1,6 +1,7 @@
 ﻿using GestaoDeBarbearia.Application.UseCases;
 using GestaoDeBarbearia.Communication.Requests;
 using GestaoDeBarbearia.Communication.Responses;
+using GestaoDeBarbearia.Domain.Pagination;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestaoDeBarbearia.Api.Controllers;
@@ -8,6 +9,12 @@ namespace GestaoDeBarbearia.Api.Controllers;
 [ApiController]
 public class AppointmentsController : ControllerBase
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="useCase"></param>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPost]
     [ProducesResponseType<ResponseScheduledServiceJson>(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -22,12 +29,50 @@ public class AppointmentsController : ControllerBase
         return Created(string.Empty, response);
     }
 
-    [HttpPatch("{id:long}")]
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="useCase"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpPatch("{appointmentid:long}/confirm")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Update([FromServices] ConfirmScheduleUseCase useCase, [FromRoute] long id)
+    public async Task<IActionResult> ConfirmAppointment([FromServices] ConfirmScheduleUseCase useCase, [FromRoute] long appointmentid)
     {
-        await useCase.Execute(id);
+        await useCase.Execute(appointmentid);
 
         return NoContent();
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="useCase"></param>
+    /// <param name="appointmentid"></param>
+    /// <returns></returns>
+    [HttpPatch("{appointmentid:long}/completed")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> MarkAsCompleted([FromServices] MarkServiceAsCompletedUseCase useCase, [FromRoute] long appointmentid)
+    {
+        await useCase.Execute(appointmentid);
+
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Retorna os agendamentos feitos pelos clientes
+    /// </summary>
+    /// <param name="useCase"></param>
+    /// <param name="pagination"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [ProducesResponseType<ResponseAppointmentsJson>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> FetchAll([FromServices] FetchAppointmentsUseCase useCase, [FromQuery] RequestPaginationParamsJson pagination)
+    {
+        var response = await useCase.Execute(pagination);
+
+        return Ok(response);
+    }
+
+
 }
