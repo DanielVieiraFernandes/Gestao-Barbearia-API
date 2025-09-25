@@ -10,7 +10,8 @@ namespace GestaoDeBarbearia.Api.Controllers;
 public class AppointmentsController : ControllerBase
 {
     /// <summary>
-    /// 
+    /// Registra um novo agendamento com os dados fornecidos.<br/>
+    /// Este endpoint cria um novo agendamento no sistema e retorna os dados de confirmação.
     /// </summary>
     /// <param name="useCase"></param>
     /// <param name="request"></param>
@@ -30,7 +31,8 @@ public class AppointmentsController : ControllerBase
     }
 
     /// <summary>
-    /// 
+    /// Confirma um agendamento existente alterando seu status para "confirmado". <br/>
+    /// Essa ação é geralmente executada por um funcionário para reconhecer o agendamento.
     /// </summary>
     /// <param name="useCase"></param>
     /// <param name="id"></param>
@@ -45,22 +47,25 @@ public class AppointmentsController : ControllerBase
     }
 
     /// <summary>
-    /// 
+    /// Marca um agendamento como "concluído", <br/> indicando que o serviço foi realizado com sucesso.<br/>
+    /// Esta é a atualização de status final para um serviço.
     /// </summary>
     /// <param name="useCase"></param>
+    /// <param name="request"></param>
     /// <param name="appointmentid"></param>
     /// <returns></returns>
-    [HttpPatch("{appointmentid:long}/completed")]
+    [HttpPut("{appointmentid:long}/completed")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> MarkAsCompleted([FromServices] MarkServiceAsCompletedUseCase useCase, [FromRoute] long appointmentid)
+    public async Task<IActionResult> MarkAsCompleted([FromServices] MarkServiceAsCompletedUseCase useCase, [FromBody] RequestMarkServiceCompletedJson request, [FromRoute] long appointmentid)
     {
-        await useCase.Execute(appointmentid);
+        await useCase.Execute(appointmentid, request);
 
         return NoContent();
     }
 
     /// <summary>
-    /// Retorna os agendamentos feitos pelos clientes
+    /// Retorna uma lista paginada de todos os agendamentos.<br/>
+    /// Este endpoint permite filtrar e visualizar todos os serviços agendados no sistema.
     /// </summary>
     /// <param name="useCase"></param>
     /// <param name="pagination"></param>
@@ -70,6 +75,22 @@ public class AppointmentsController : ControllerBase
     public async Task<IActionResult> FetchAll([FromServices] FetchAppointmentsUseCase useCase, [FromQuery] RequestPaginationParamsJson pagination)
     {
         var response = await useCase.Execute(pagination);
+
+        return Ok(response);
+    }
+
+    /// <summary>
+    /// Retorna um único agendamento pelo seu ID exclusivo.<br/>
+    /// É usado para buscar detalhes específicos de um agendamento em particular.
+    /// </summary>
+    /// <param name="useCase"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet("{id:long}")]
+    [ProducesResponseType<ResponseAppointmentJson>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetById([FromServices] GetAppointmentByIdUseCase useCase, [FromRoute] long id)
+    {
+        var response = await useCase.Execute(id);
 
         return Ok(response);
     }

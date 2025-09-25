@@ -1,4 +1,5 @@
-﻿using GestaoDeBarbearia.Domain.Enums;
+﻿using GestaoDeBarbearia.Communication.Requests;
+using GestaoDeBarbearia.Domain.Enums;
 using GestaoDeBarbearia.Domain.Repositories;
 using GestaoDeBarbearia.Exception.ExceptionsBase;
 
@@ -10,7 +11,7 @@ public class MarkServiceAsCompletedUseCase
     {
         this.scheduleRepository = scheduleRepository;
     }
-    public async Task Execute(long Id)
+    public async Task Execute(long Id, RequestMarkServiceCompletedJson request)
     {
         var appointment = await scheduleRepository.FindById(Id);
 
@@ -23,6 +24,7 @@ public class MarkServiceAsCompletedUseCase
         appointment.Status = AppointmentStatus.Completed;
         appointment.PaidAt = DateTime.Now;
         appointment.UpdatedAt = DateTime.Now;
+        appointment.Observations = request.Observation;
 
         await scheduleRepository.Update(appointment);
     }

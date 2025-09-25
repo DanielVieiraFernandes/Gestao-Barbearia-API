@@ -77,7 +77,7 @@ public class ScheduleRepository : IScheduleRepository
             parameters.Add("Status", pagination.Status);
         }
 
-        sql.Append($"ORDER BY createdat {pagination.OrderBy.GetEnumDescription()} ");
+        sql.Append($"ORDER BY {pagination.OrderByColumn.ToString().ToLower()} {pagination.OrderByDirection.GetEnumDescription()} ");
 
         var result = await connection.QueryAsync<Appointment>(sql.ToString(), parameters);
 
@@ -135,7 +135,7 @@ public class ScheduleRepository : IScheduleRepository
         StringBuilder sql = new();
 
         sql.Append("UPDATE barber_shop_appointments SET appointmentdatetime = @AppointmentDateTime, clientname = @ClientName, ");
-        sql.Append("clientphone = @ClientPhone, paymenttype = @PaymentType, status = @Status, paidat = @PaidAt ,updatedat = @UpdatedAt WHERE id = @Id ");
+        sql.Append("clientphone = @ClientPhone, paymenttype = @PaymentType, status = @Status, paidat = @PaidAt ,updatedat = @UpdatedAt, observations = @Observations WHERE id = @Id ");
 
         await connection.ExecuteAsync(sql.ToString(), appointment);
     }
