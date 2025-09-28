@@ -39,7 +39,8 @@ while (op != 3)
     Console.ForegroundColor = ConsoleColor.Cyan;
     Console.WriteLine("2 - CRIAR TABELAS NO BANCO (INDIVIDUAL)");
     Console.ForegroundColor = ConsoleColor.DarkYellow;
-    Console.WriteLine("3 - RODAR SEED DE AGENDAMENTOS\n");
+    Console.WriteLine("3 - RODAR SEED DE AGENDAMENTOS");
+    Console.WriteLine("4 - RODAR SEED DE FUNCIONÁRTIOS\n");
     Console.ResetColor();
     Console.Write("Escolha uma opção: ");
 
@@ -47,7 +48,7 @@ while (op != 3)
     {
         case "1":
             Console.Clear();
-            CreateTablesGeneral();
+            await CreateTablesGeneral();
             break;
         case "2":
             Console.Clear();
@@ -78,6 +79,29 @@ while (op != 3)
 
             break;
         case "4":
+            Console.Clear();
+
+            while (true)
+            {
+                Console.WriteLine("Quantos registros deseja inserir?");
+
+                bool isAInt = int.TryParse(Console.ReadLine(), out int numberOfRecords);
+
+                if (!isAInt || numberOfRecords < 1)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Valor inválido, digite novamente: \n");
+                    Console.ResetColor();
+                    continue;
+                }
+
+                await SeedService.RunSeedInEmployees(connection, numberOfRecords);
+                Console.WriteLine("Pressione qualquer tecla para retornar ao menu de criação de tabelas individuais.");
+                Utils.PauseAndClean();
+                break;
+            }
+            break;
+        case "5":
             op = 3;
             break;
         default:
@@ -90,9 +114,19 @@ while (op != 3)
     }
 }
 
-void CreateTablesGeneral()
+async Task CreateTablesGeneral()
 {
+    await barberShopService.CreateBarberShopServicesTable();
+    await barberShopService.CreateBarberShopAppointmentsTable();
+    await barberShopService.CreateBarberShopAppointmentsServicesTable();
+    await barberShopService.CreateBarberShopClientsTable();
+    await barberShopService.CreateBarberShopEmployeesTable();
 
+    Console.ForegroundColor = ConsoleColor.DarkGreen;
+    Console.WriteLine("\nTabelas no banco criadas com sucesso!");
+    Console.ForegroundColor = ConsoleColor.Yellow;
+    Console.WriteLine("Pressione qualquer tecla para retornar ao menu...");
+    Utils.PauseAndClean();
 }
 
 async Task CreateTablesIndividual()

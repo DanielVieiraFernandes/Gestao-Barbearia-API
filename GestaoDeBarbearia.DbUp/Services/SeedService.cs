@@ -58,12 +58,69 @@ internal class SeedService
         catch (Exception ex)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Exceção no método {MethodBase.GetCurrentMethod()}. Erro: \n {ex.Message}");
+            Console.WriteLine($"Exceção no método {MethodBase.GetCurrentMethod()!.Name}. Erro: \n {ex.Message}");
             Console.ResetColor();
         }
     }
-    //public static async Task RunSeedInEmployees()
-    //{
 
-    //}
+    public static async Task RunSeedInEmployees(NpgsqlConnection connection, int numberOfRecords)
+    {
+        try
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("Executando seed de funcionários...");
+            Console.ResetColor();
+
+            var fakerEmployee = new Faker<Employee>("pt_BR")
+            .RuleFor(e => e.Id, f => f.IndexFaker + 1)
+            .RuleFor(e => e.Name, f => f.Person.FullName)
+            .RuleFor(e => e.Telephone, f => f.Phone.PhoneNumber("## #####-####"))
+            .RuleFor(e => e.Email, (f, e) => f.Internet.Email(e.Name))
+            .RuleFor(e => e.Password, f => f.Internet.Password(length: 10, memorable: true))
+            .RuleFor(e => e.Salary, f => f.Random.Long(min: 150000, max: 800000))
+            .RuleFor(e => e.Position, f => f.PickRandom<EmployeePosition>())
+            .RuleFor(e => e.CreatedAt, f => f.Date.Past())
+            .RuleFor(e => e.UpdatedAt, (f, e) => f.Date.Between(e.CreatedAt, DateTime.Now));
+
+            List<Employee> employees = fakerEmployee.Generate(numberOfRecords);
+
+            string sql;
+
+            sql = "TRUNCATE TABLE barber_shop_employees RESTART IDENTITY;";
+
+            await connection.ExecuteAsync(sql.ToString());
+
+            sql = @"INSERT INTO barber_shop_employees (
+                            name,
+                            telephone,
+                            email,
+                            password,
+                            salary,
+                            ""position"", -- A coluna 'position' deve ser entre aspas duplas, pois é uma palavra reservada no PostgreSQL
+                            createdat,
+                            updatedat
+                        ) VALUES (
+                            @Name,
+                            @Telephone,
+                            @Email,
+                            @Password,
+                            @Salary,
+                            @Position,
+                            @CreatedAt,
+                            @UpdatedAt
+                        );";
+
+            await connection.ExecuteAsync(sql, employees);
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("seed de funcionários executado com sucesso!");
+            Console.ResetColor();
+        }
+        catch (Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Exceção no método {MethodBase.GetCurrentMethod()!.Name}. Erro: \n {ex.Message}");
+            Console.ResetColor();
+        }
+    }
 }

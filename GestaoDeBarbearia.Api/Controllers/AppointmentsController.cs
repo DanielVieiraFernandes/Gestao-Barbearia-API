@@ -5,6 +5,7 @@ using GestaoDeBarbearia.Domain.Pagination;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestaoDeBarbearia.Api.Controllers;
+
 [Route("api/[controller]")]
 [ApiController]
 public class AppointmentsController : ControllerBase
@@ -94,6 +95,5 @@ public class AppointmentsController : ControllerBase
 
         return Ok(response);
     }
-
 
 }
