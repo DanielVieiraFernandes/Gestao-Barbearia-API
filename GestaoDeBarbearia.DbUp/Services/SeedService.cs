@@ -34,7 +34,7 @@ internal class SeedService
 
             string sql;
 
-            sql = "TRUNCATE TABLE barber_shop_appointments RESTART IDENTITY;";
+            sql = "TRUNCATE TABLE barber_shop_appointments RESTART IDENTITY CASCADE;";
 
             await connection.ExecuteAsync(sql.ToString());
 
@@ -86,7 +86,7 @@ internal class SeedService
 
             string sql;
 
-            sql = "TRUNCATE TABLE barber_shop_employees RESTART IDENTITY;";
+            sql = "TRUNCATE TABLE barber_shop_employees RESTART IDENTITY CASCADE;";
 
             await connection.ExecuteAsync(sql.ToString());
 

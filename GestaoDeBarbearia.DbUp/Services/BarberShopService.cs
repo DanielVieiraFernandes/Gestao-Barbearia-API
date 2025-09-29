@@ -2,6 +2,7 @@
 using GestaoDeBarbearia.DbUp.Models;
 using Npgsql;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 
@@ -10,6 +11,14 @@ internal class BarberShopService
 {
     private readonly NpgsqlConnection connection;
     private readonly string FilePath;
+
+    private void LogErro(Exception ex, [CallerMemberName] string metodo = "")
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"Exceção no método {metodo}. Erro: \n{ex.Message}");
+        Console.ResetColor();
+    }
+
 
     public BarberShopService(NpgsqlConnection connection)
     {
@@ -109,9 +118,7 @@ internal class BarberShopService
         }
         catch (Exception ex)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Exceção no método 'CreateBarberShopServicesTable'. Erro: \n" + ex.Message);
-            Console.ResetColor();
+            LogErro(ex);
         }
     }
 
@@ -144,9 +151,7 @@ internal class BarberShopService
         }
         catch (Exception ex)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Exceção no método {MethodBase.GetCurrentMethod()}. Erro: \n {ex.Message}");
-            Console.ResetColor();
+            LogErro(ex);
         }
 
     }
@@ -192,9 +197,7 @@ internal class BarberShopService
         }
         catch (Exception ex)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Exceção no método 'CreateBarberShopAppointmentTable'. Erro: \n" + ex.Message);
-            Console.ResetColor();
+            LogErro(ex);
         }
     }
 
@@ -231,9 +234,7 @@ internal class BarberShopService
         }
         catch (Exception ex)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Exceção no método 'CreateBarberShopClientsTable'. Erro: \n" + ex.Message);
-            Console.ResetColor();
+            LogErro(ex);
         }
     }
 
@@ -272,9 +273,116 @@ internal class BarberShopService
         }
         catch (Exception ex)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Exceção no método 'CreateBarberShopEmployeesTable'. Erro: \n" + ex.Message);
+            LogErro(ex);
+        }
+    }
+
+    public async Task CreateBarberShopProductsTable()
+    {
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("Criando tabela de produtos...");
+        Console.ResetColor();
+        try
+        {
+            StringBuilder sql = new();
+
+            sql.Append("DROP TABLE IF EXISTS barber_shop_products CASCADE; ");
+
+            await connection.ExecuteAsync(sql.ToString());
+
+            sql.Clear();
+
+            sql.Append("CREATE TABLE barber_shop_products ( ");
+            sql.Append("id BIGSERIAL PRIMARY KEY, ");
+            sql.Append("name VARCHAR(255) NOT NULL, ");
+            sql.Append("saleprice BIGINT NOT NULL, ");
+            sql.Append("unitcost BIGINT NOT NULL, ");
+            sql.Append("quantity BIGINT NOT NULL, ");
+            sql.Append("minimumstock INT NOT NULL, ");
+            sql.Append("createdat TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(), ");
+            sql.Append("updatedat TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() ");
+            sql.Append("); ");
+
+            await connection.ExecuteAsync(sql.ToString());
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Tabela de produtos criada com sucesso!");
             Console.ResetColor();
+        }
+        catch (Exception ex)
+        {
+            LogErro(ex);
+        }
+    }
+
+    public async Task CreateBarberShopSalesTable()
+    {
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("Criando tabela de vendas...");
+        Console.ResetColor();
+        try
+        {
+            StringBuilder sql = new();
+
+            sql.Append("DROP TABLE IF EXISTS barber_shop_sales CASCADE; ");
+
+            await connection.ExecuteAsync(sql.ToString());
+
+            sql.Clear();
+
+            sql.Append("CREATE TABLE barber_shop_sales ( ");
+            sql.Append("id BIGSERIAL PRIMARY KEY, ");
+            sql.Append("saledate TIMESTAMP WITHOUT TIME ZONE NOT NULL, ");
+            sql.Append("saletotal BIGINT NOT NULL, ");
+            sql.Append("updatedat TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() ");
+            sql.Append("); ");
+
+            await connection.ExecuteAsync(sql.ToString());
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Tabela de vendas criada com sucesso!");
+            Console.ResetColor();
+        }
+        catch (Exception ex)
+        {
+            LogErro(ex);
+        }
+    }
+
+    public async Task CreateBarberShopSaleDetailsTable()
+    {
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("Criando tabela de detalhes da venda...");
+        Console.ResetColor();
+        try
+        {
+            StringBuilder sql = new();
+
+            sql.Append("DROP TABLE IF EXISTS barber_shop_sale_details CASCADE; ");
+
+            await connection.ExecuteAsync(sql.ToString());
+
+            sql.Clear();
+
+            sql.Append("CREATE TABLE barber_shop_sale_details ( ");
+            sql.Append("id BIGSERIAL PRIMARY KEY, ");
+            sql.Append("saleid BIGINT NOT NULL, ");
+            sql.Append("productid BIGINT NOT NULL, ");
+            sql.Append("quantity BIGINT NOT NULL, ");
+            sql.Append("unitsaleprice BIGINT NOT NULL, ");
+            sql.Append("CONSTRAINT fk_sale_details_sales FOREIGN KEY (saleid) REFERENCES barber_shop_sales (id) ON UPDATE CASCADE, ");
+            sql.Append("CONSTRAINT fk_sale_details_products FOREIGN KEY (productid) REFERENCES barber_shop_products (id) ON UPDATE CASCADE ");
+            sql.Append("); ");
+
+            await connection.ExecuteAsync(sql.ToString());
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Tabela de detalhes da venda criada com sucesso!");
+            Console.ResetColor();
+        }
+        catch (Exception ex)
+        {
+            LogErro(ex);
         }
     }
 }
