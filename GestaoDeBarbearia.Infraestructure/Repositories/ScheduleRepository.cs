@@ -61,7 +61,7 @@ public class ScheduleRepository : IScheduleRepository
         await connection.ExecuteAsync(sql.ToString());
     }
 
-    public async Task<List<Appointment>> FindAll(RequestPaginationParamsJson pagination)
+    public async Task<List<Appointment>> FindAll(RequestAppointmentsPaginationParamsJson pagination)
     {
         await using var connection = await dbFunctions.CreateNewConnection();
 

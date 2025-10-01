@@ -1,4 +1,4 @@
-﻿using GestaoDeBarbearia.Application.UseCases;
+﻿using GestaoDeBarbearia.Application.UseCases.Appointments;
 using GestaoDeBarbearia.Communication.Requests;
 using GestaoDeBarbearia.Communication.Responses;
 using GestaoDeBarbearia.Domain.Pagination;
@@ -73,7 +73,7 @@ public class AppointmentsController : ControllerBase
     /// <returns></returns>
     [HttpGet]
     [ProducesResponseType<ResponseAppointmentsJson>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> FetchAll([FromServices] FetchAppointmentsUseCase useCase, [FromQuery] RequestPaginationParamsJson pagination)
+    public async Task<IActionResult> FetchAll([FromServices] FetchAppointmentsUseCase useCase, [FromQuery] RequestAppointmentsPaginationParamsJson pagination)
     {
         var response = await useCase.Execute(pagination);
 

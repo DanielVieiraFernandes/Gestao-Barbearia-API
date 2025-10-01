@@ -40,7 +40,7 @@ while (op != 3)
     Console.WriteLine("2 - CRIAR TABELAS NO BANCO (INDIVIDUAL)");
     Console.ForegroundColor = ConsoleColor.DarkYellow;
     Console.WriteLine("3 - RODAR SEED DE AGENDAMENTOS");
-    Console.WriteLine("4 - RODAR SEED DE FUNCIONÁRTIOS\n");
+    Console.WriteLine("4 - RODAR SEED DE FUNCIONÁRIOS\n");
     Console.ResetColor();
     Console.Write("Escolha uma opção: ");
 
@@ -117,10 +117,13 @@ while (op != 3)
 async Task CreateTablesGeneral()
 {
     await barberShopService.CreateBarberShopServicesTable();
-    await barberShopService.CreateBarberShopAppointmentsTable();
-    await barberShopService.CreateBarberShopAppointmentsServicesTable();
     await barberShopService.CreateBarberShopClientsTable();
     await barberShopService.CreateBarberShopEmployeesTable();
+    await barberShopService.CreateBarberShopAppointmentsTable();
+    await barberShopService.CreateBarberShopAppointmentsServicesTable();
+    await barberShopService.CreateBarberShopProductsTable();
+    await barberShopService.CreateBarberShopSalesTable();
+    await barberShopService.CreateBarberShopSaleDetailsTable();
 
     Console.ForegroundColor = ConsoleColor.DarkGreen;
     Console.WriteLine("\nTabelas no banco criadas com sucesso!");
@@ -138,19 +141,21 @@ async Task CreateTablesIndividual()
         Utils.ShowHeader();
 
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine("-> 8 - RETORNAR AO MENU PRINCIPAL\n");
+        Console.WriteLine("-> 10 - RETORNAR AO MENU PRINCIPAL\n");
         Console.ResetColor();
 
         Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine("+++++++++++++++++++++++++++++++++++++++");
-        Console.WriteLine("| 1 - CRIAR TABELA DE SERVIÇOS        |");
-        Console.WriteLine("| 2 - CRIAR TABELA DE AGENDAMENTOS    |");
-        Console.WriteLine("| 3 - CRIAR TABELA DE CLIENTES        |");
-        Console.WriteLine("| 4 - CRIAR TABELA DE FUNCIONÁRIOS    |");
-        Console.WriteLine("| 5 - CRIAR TABELA DE PRODUTOS        |");
-        Console.WriteLine("| 6 - CRIAR TABELA DE DESPESAS        |");
-        Console.WriteLine("| 7 - CRIAR TABELA INTERMEDIÁRIA (sa) |");
-        Console.WriteLine("+++++++++++++++++++++++++++++++++++++++\n\n");
+        Console.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        Console.WriteLine("| 1 - CRIAR TABELA DE SERVIÇOS                           |");
+        Console.WriteLine("| 2 - CRIAR TABELA DE AGENDAMENTOS                       |");
+        Console.WriteLine("| 3 - CRIAR TABELA DE CLIENTES                           |");
+        Console.WriteLine("| 4 - CRIAR TABELA DE FUNCIONÁRIOS                       |");
+        Console.WriteLine("| 5 - CRIAR TABELA DE PRODUTOS                           |");
+        Console.WriteLine("| 6 - CRIAR TABELA DE VENDAS                             |");
+        Console.WriteLine("| 7 - CRIAR TABELA DE DESPESAS                           |");
+        Console.WriteLine("| 8 - CRIAR TABELA INTERMEDIÁRIA (services_appointments) |");
+        Console.WriteLine("| 9 - CRIAR TABELA INTERMEDIÁRIA (sale_details)          |");
+        Console.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n");
         Console.ResetColor();
 
         Console.Write("Escolha uma opção: ");
@@ -185,14 +190,35 @@ async Task CreateTablesIndividual()
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
-            case "7":
+            case "5":
+                Console.Clear();
+                await barberShopService.CreateBarberShopProductsTable();
+                Console.WriteLine("Pressione qualquer tecla para retornar ao menu de criação de tabelas individuais.");
+                Utils.PauseAndClean();
+                Console.Clear();
+                break;
+            case "6":
+                Console.Clear();
+                await barberShopService.CreateBarberShopSalesTable();
+                Console.WriteLine("Pressione qualquer tecla para retornar ao menu de criação de tabelas individuais.");
+                Utils.PauseAndClean();
+                Console.Clear();
+                break;
+            case "8":
                 Console.Clear();
                 await barberShopService.CreateBarberShopAppointmentsServicesTable();
                 Console.WriteLine("Pressione qualquer tecla para retornar ao menu de criação de tabelas individuais.");
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
-            case "8":
+            case "9":
+                Console.Clear();
+                await barberShopService.CreateBarberShopSaleDetailsTable();
+                Console.WriteLine("Pressione qualquer tecla para retornar ao menu de criação de tabelas individuais.");
+                Utils.PauseAndClean();
+                Console.Clear();
+                break;
+            case "10":
                 op = 5;
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("Retornando ao menu base...");

@@ -13,5 +13,6 @@ public static class DependencyInjectionExtension
 
         // Injeção de dependência dos repositórios
         services.AddScoped<IScheduleRepository, ScheduleRepository>();
+        services.AddScoped<IProductRepository, ProductRepository>();
     }
 }

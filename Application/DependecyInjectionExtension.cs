@@ -1,4 +1,5 @@
-﻿using GestaoDeBarbearia.Application.UseCases;
+﻿using GestaoDeBarbearia.Application.UseCases.Appointments;
+using GestaoDeBarbearia.Application.UseCases.Products;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GestaoDeBarbearia.Application;
@@ -6,10 +7,14 @@ public static class DependecyInjectionExtension
 {
     public static void AddApplication(this IServiceCollection services)
     {
+        // Casos de uso de agendamentos
         services.AddScoped<ScheduleServiceUseCase>();
         services.AddScoped<ConfirmScheduleUseCase>();
         services.AddScoped<FetchAppointmentsUseCase>();
         services.AddScoped<MarkServiceAsCompletedUseCase>();
         services.AddScoped<GetAppointmentByIdUseCase>();
+
+        // Casos de uso de produtos
+        services.AddScoped<CreateProductUseCase>();
     }
 }

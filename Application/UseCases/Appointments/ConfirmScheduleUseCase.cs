@@ -2,7 +2,7 @@
 using GestaoDeBarbearia.Domain.Repositories;
 using GestaoDeBarbearia.Exception.ExceptionsBase;
 
-namespace GestaoDeBarbearia.Application.UseCases;
+namespace GestaoDeBarbearia.Application.UseCases.Appointments;
 public class ConfirmScheduleUseCase
 {
     private IScheduleRepository scheduleRepository;

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 
 namespace GestaoDeBarbearia.Domain.Pagination;
-public enum OrderByColumn
+public enum OrderByAppointmentColumn
 {
     [Description("Ordenar pela data de criação do agendamento")]
     CreatedAt = 1,
