@@ -1,9 +1,11 @@
 ﻿using Dapper;
 using GestaoDeBarbearia.Domain.Entities;
+using GestaoDeBarbearia.Domain.Enums;
 using GestaoDeBarbearia.Domain.Pagination;
 using GestaoDeBarbearia.Domain.Repositories;
 using GestaoDeBarbearia.Infraestructure.Utils;
 using Npgsql;
+using System.Text;
 
 namespace GestaoDeBarbearia.Infraestructure.Repositories;
 public class ProductRepository : IProductRepository
@@ -25,14 +27,32 @@ public class ProductRepository : IProductRepository
         await connection.ExecuteAsync(sql, product);
     }
 
-    public Task<Product?> FindById(long id)
+    public async Task<Product?> FindById(long id)
     {
-        throw new NotImplementedException();
+        await using NpgsqlConnection connection = await dbFunctions.CreateNewConnection();
+
+        string sql = "SELECT * FROM barber_shop_products WHERE id = @Id;";
+
+        return await connection.QueryFirstOrDefaultAsync<Product>(sql, new { Id = id });
     }
 
-    public Task<List<Product>> GetAll(RequestProductsPaginationParamsJson paginationParams)
+    public async Task<List<Product>> GetAll(RequestProductsPaginationParamsJson paginationParams)
     {
-        throw new NotImplementedException();
+        await using NpgsqlConnection connection = await dbFunctions.CreateNewConnection();
+
+        StringBuilder sql = new();
+
+        sql.Append("SELECT * FROM barber_shop_products ");
+        sql.Append($@"ORDER BY {paginationParams.OrderByColumn.ToString().ToLower()} 
+            {paginationParams.OrderByDirection.GetEnumDescription()} ");
+
+        var result = await connection.QueryAsync<Product>(sql.ToString(), paginationParams);
+
+        if (result is null || !result.Any())
+            return [];
+
+        // Equivalente a result.ToList()
+        return [.. result];
     }
 
     public Task Update(Product product)

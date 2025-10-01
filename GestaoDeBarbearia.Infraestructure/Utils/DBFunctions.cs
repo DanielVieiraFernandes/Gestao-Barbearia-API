@@ -43,4 +43,22 @@ public class DBFunctions
 
         return insertSQL;
     }
+
+    public string CreateUpdateQuery<T>(string tableName)
+    {
+        Type type = typeof(T);
+        PropertyInfo[] props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        List<string> setClauses = [];
+        // Propriedades a serem excluídas da query
+        List<string> excludeProps = ["Id", "CreatedAt", "UpdatedAt"];
+        foreach (var prop in props)
+        {
+            // Ignorar propriedades que estão na lista de exclusão
+            if (excludeProps.Contains(prop.Name))
+                continue;
+            setClauses.Add($"{prop.Name.ToLower()} = @{prop.Name}");
+        }
+        string updateSQL = $"UPDATE {tableName} SET {string.Join(", ", setClauses)} WHERE id = @Id;";
+        return updateSQL;
+    }
 }

@@ -16,5 +16,7 @@ public static class DependecyInjectionExtension
 
         // Casos de uso de produtos
         services.AddScoped<CreateProductUseCase>();
+        services.AddScoped<GetProductByIdUseCase>();
+        services.AddScoped<FetchProductsUseCase>();
     }
 }

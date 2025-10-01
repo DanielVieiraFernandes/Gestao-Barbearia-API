@@ -1,5 +1,7 @@
 ﻿using GestaoDeBarbearia.Application.UseCases.Products;
 using GestaoDeBarbearia.Communication.Requests;
+using GestaoDeBarbearia.Communication.Responses;
+using GestaoDeBarbearia.Domain.Pagination;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestaoDeBarbearia.Api.Controllers;
@@ -20,5 +22,35 @@ public class ProductsController : ControllerBase
         await useCase.Execute(request);
 
         return Created(string.Empty, new { });
+    }
+
+    /// <summary>
+    /// Método para buscar todos os produtos com paginação.<br/>
+    /// </summary>
+    /// <param name="useCase"></param>
+    /// <param name="paginationParams"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [ProducesResponseType<ResponseProductsJson>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> FetchProducts([FromServices] FetchProductsUseCase useCase, [FromQuery] RequestProductsPaginationParamsJson paginationParams)
+    {
+        var result = await useCase.Execute(paginationParams);
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Método para buscar um único produto pelo seu Id.<br/>
+    /// </summary>
+    /// <param name="useCase"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet("{id:long}")]
+    [ProducesResponseType<ResponseProductJson>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetProductById([FromServices] GetProductByIdUseCase useCase, [FromRoute] long id)
+    {
+        var result = await useCase.Execute(id);
+
+        return Ok(result);
     }
 }
