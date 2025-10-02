@@ -17,7 +17,7 @@ public class ProductsController : ControllerBase
     /// <returns></returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> CreateProduct([FromServices] CreateProductUseCase useCase, [FromBody] RequestCreateProductJson request)
+    public async Task<IActionResult> CreateProduct([FromServices] CreateProductUseCase useCase, [FromBody] RequestProductJson request)
     {
         await useCase.Execute(request);
 
@@ -52,5 +52,21 @@ public class ProductsController : ControllerBase
         var result = await useCase.Execute(id);
 
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Método para atualizar um produto existente pelo seu Id.<br/>
+    /// </summary>
+    /// <param name="useCase"></param>
+    /// <param name="request"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpPut("{id:long}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> UpdateProduct([FromServices] UpdateProductUseCase useCase, [FromBody] RequestProductJson request, [FromRoute] long id)
+    {
+        await useCase.Execute(id, request);
+
+        return NoContent();
     }
 }

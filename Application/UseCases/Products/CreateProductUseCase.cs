@@ -11,7 +11,7 @@ public class CreateProductUseCase
     {
         this.productRepository = productRepository;
     }
-    public async Task Execute(RequestCreateProductJson request)
+    public async Task Execute(RequestProductJson request)
     {
         Product product = new()
         {

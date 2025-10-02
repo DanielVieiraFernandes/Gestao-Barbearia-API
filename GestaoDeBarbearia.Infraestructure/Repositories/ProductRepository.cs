@@ -55,8 +55,12 @@ public class ProductRepository : IProductRepository
         return [.. result];
     }
 
-    public Task Update(Product product)
+    public async Task Update(Product product)
     {
-        throw new NotImplementedException();
+        await using NpgsqlConnection connection = await dbFunctions.CreateNewConnection();
+
+        string updateQuery = dbFunctions.CreateUpdateQuery<Product>("barber_shop_products");
+
+        await connection.ExecuteAsync(updateQuery, product);
     }
 }

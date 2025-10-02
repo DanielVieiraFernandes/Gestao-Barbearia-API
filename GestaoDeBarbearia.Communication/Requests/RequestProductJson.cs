@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace GestaoDeBarbearia.Communication.Requests;
-public class RequestCreateProductJson
+public class RequestProductJson
 {
     [Required(ErrorMessage = "O nome do produto é obrigatório")]
     [StringLength(255, MinimumLength = 3, ErrorMessage = "O nome do produto deve ter no mínimo 3 caracteres e no máximo 255")]

@@ -18,5 +18,6 @@ public static class DependecyInjectionExtension
         services.AddScoped<CreateProductUseCase>();
         services.AddScoped<GetProductByIdUseCase>();
         services.AddScoped<FetchProductsUseCase>();
+        services.AddScoped<UpdateProductUseCase>();
     }
 }
