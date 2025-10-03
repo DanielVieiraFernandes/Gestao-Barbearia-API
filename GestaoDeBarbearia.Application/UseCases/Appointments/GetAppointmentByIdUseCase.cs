@@ -6,8 +6,8 @@ namespace GestaoDeBarbearia.Application.UseCases.Appointments;
 public class GetAppointmentByIdUseCase
 {
 
-    private IScheduleRepository scheduleRepository;
-    public GetAppointmentByIdUseCase(IScheduleRepository scheduleRepository)
+    private ISchedulesRepository scheduleRepository;
+    public GetAppointmentByIdUseCase(ISchedulesRepository scheduleRepository)
     {
         this.scheduleRepository = scheduleRepository;
     }

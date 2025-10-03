@@ -6,8 +6,8 @@ using GestaoDeBarbearia.Exception.ExceptionsBase;
 namespace GestaoDeBarbearia.Application.UseCases.Appointments;
 public class MarkServiceAsCompletedUseCase
 {
-    private IScheduleRepository scheduleRepository;
-    public MarkServiceAsCompletedUseCase(IScheduleRepository scheduleRepository)
+    private ISchedulesRepository scheduleRepository;
+    public MarkServiceAsCompletedUseCase(ISchedulesRepository scheduleRepository)
     {
         this.scheduleRepository = scheduleRepository;
     }

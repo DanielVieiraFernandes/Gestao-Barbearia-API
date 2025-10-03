@@ -1,12 +1,12 @@
 ﻿using GestaoDeBarbearia.Communication.Responses;
-using GestaoDeBarbearia.Domain.Pagination;
+using GestaoDeBarbearia.Domain.Pagination.Appointments;
 using GestaoDeBarbearia.Domain.Repositories;
 
 namespace GestaoDeBarbearia.Application.UseCases.Appointments;
 public class FetchAppointmentsUseCase
 {
-    private IScheduleRepository scheduleRepository;
-    public FetchAppointmentsUseCase(IScheduleRepository scheduleRepository)
+    private ISchedulesRepository scheduleRepository;
+    public FetchAppointmentsUseCase(ISchedulesRepository scheduleRepository)
     {
         this.scheduleRepository = scheduleRepository;
     }

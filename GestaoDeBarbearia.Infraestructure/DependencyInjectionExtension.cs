@@ -12,7 +12,8 @@ public static class DependencyInjectionExtension
         services.AddScoped<DBFunctions>();
 
         // Injeção de dependência dos repositórios
-        services.AddScoped<IScheduleRepository, ScheduleRepository>();
-        services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<ISchedulesRepository, SchedulesRepository>();
+        services.AddScoped<IProductsRepository, ProductsRepository>();
+        services.AddScoped<ISalesRepository, SalesRepository>();
     }
 }

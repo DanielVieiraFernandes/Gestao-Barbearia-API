@@ -39,10 +39,10 @@ while (op != 3)
     Console.ForegroundColor = ConsoleColor.Cyan;
     Console.WriteLine("2 - CRIAR TABELAS NO BANCO (INDIVIDUAL)");
     Console.ForegroundColor = ConsoleColor.DarkYellow;
-    Console.WriteLine("3 - RODAR SEED DE AGENDAMENTOS");
-    Console.WriteLine("4 - RODAR SEED DE FUNCIONÁRIOS\n");
+    Console.WriteLine("3 - SELECIONAR TABELA PARA RODAR SEED");
+
     Console.ResetColor();
-    Console.Write("Escolha uma opção: ");
+    Console.Write("\nEscolha uma opção: ");
 
     switch (Console.ReadLine())
     {
@@ -59,48 +59,73 @@ while (op != 3)
 
             while (true)
             {
-                Console.WriteLine("Quantos registros deseja inserir?");
+                Console.WriteLine("1 - RODAR SEED DE AGENDAMENTOS");
+                Console.WriteLine("2 - RODAR SEED DE FUNCIONÁRIOS");
+                Console.WriteLine("3 - RODAR SEED DE PRODUTOS");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("4 - RETORNAR AO MENU PRINCIPAL");
+                Console.ResetColor();
 
-                bool isAInt = int.TryParse(Console.ReadLine(), out int numberOfRecords);
-
-                if (!isAInt || numberOfRecords < 1)
+                switch (Console.ReadLine())
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Valor inválido, digite novamente: \n");
-                    Console.ResetColor();
-                    continue;
+                    case "1":
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Quantos registros deseja inserir?");
+                            bool isAInt = int.TryParse(Console.ReadLine(), out int numberOfRecords);
+                            if (!isAInt || numberOfRecords < 1)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("Valor inválido, digite novamente: \n");
+                                Console.ResetColor();
+                                continue;
+                            }
+                            await SeedService.RunSeedInAppointments(connection, numberOfRecords);
+                            Utils.PauseAndClean();
+                            continue;
+                        }
+                    case "2":
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Quantos registros deseja inserir?");
+                            bool isAInt = int.TryParse(Console.ReadLine(), out int numberOfRecords);
+                            if (!isAInt || numberOfRecords < 1)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("Valor inválido, digite novamente: \n");
+                                Console.ResetColor();
+                                continue;
+                            }
+                            await SeedService.RunSeedInEmployees(connection, numberOfRecords);
+                            Utils.PauseAndClean();
+                            continue;
+                        }
+                    case "3":
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Quantos registros deseja inserir?");
+                            bool isAInt = int.TryParse(Console.ReadLine(), out int numberOfRecords);
+                            if (!isAInt || numberOfRecords < 1)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("Valor inválido, digite novamente: \n");
+                                Console.ResetColor();
+                                continue;
+                            }
+                            await SeedService.RunSeedInProducts(connection, numberOfRecords);
+                            Utils.PauseAndClean();
+                            continue;
+                        }
+                    default:
+                        Console.Clear();
+                        break;
                 }
 
-                await SeedService.RunSeedInAppointments(connection, numberOfRecords);
-                Console.WriteLine("Pressione qualquer tecla para retornar ao menu de criação de tabelas individuais.");
-                Utils.PauseAndClean();
                 break;
             }
 
             break;
-        case "4":
-            Console.Clear();
 
-            while (true)
-            {
-                Console.WriteLine("Quantos registros deseja inserir?");
-
-                bool isAInt = int.TryParse(Console.ReadLine(), out int numberOfRecords);
-
-                if (!isAInt || numberOfRecords < 1)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Valor inválido, digite novamente: \n");
-                    Console.ResetColor();
-                    continue;
-                }
-
-                await SeedService.RunSeedInEmployees(connection, numberOfRecords);
-                Console.WriteLine("Pressione qualquer tecla para retornar ao menu de criação de tabelas individuais.");
-                Utils.PauseAndClean();
-                break;
-            }
-            break;
         case "5":
             op = 3;
             break;
@@ -127,8 +152,6 @@ async Task CreateTablesGeneral()
 
     Console.ForegroundColor = ConsoleColor.DarkGreen;
     Console.WriteLine("\nTabelas no banco criadas com sucesso!");
-    Console.ForegroundColor = ConsoleColor.Yellow;
-    Console.WriteLine("Pressione qualquer tecla para retornar ao menu...");
     Utils.PauseAndClean();
 }
 
@@ -165,56 +188,48 @@ async Task CreateTablesIndividual()
             case "1":
                 Console.Clear();
                 await barberShopService.CreateBarberShopServicesTable();
-                Console.WriteLine("Pressione qualquer tecla para retornar ao menu de criação de tabelas individuais.");
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
             case "2":
                 Console.Clear();
                 await barberShopService.CreateBarberShopAppointmentsTable();
-                Console.WriteLine("Pressione qualquer tecla para retornar ao menu de criação de tabelas individuais.");
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
             case "3":
                 Console.Clear();
                 await barberShopService.CreateBarberShopClientsTable();
-                Console.WriteLine("Pressione qualquer tecla para retornar ao menu de criação de tabelas individuais.");
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
             case "4":
                 Console.Clear();
                 await barberShopService.CreateBarberShopEmployeesTable();
-                Console.WriteLine("Pressione qualquer tecla para retornar ao menu de criação de tabelas individuais.");
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
             case "5":
                 Console.Clear();
                 await barberShopService.CreateBarberShopProductsTable();
-                Console.WriteLine("Pressione qualquer tecla para retornar ao menu de criação de tabelas individuais.");
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
             case "6":
                 Console.Clear();
                 await barberShopService.CreateBarberShopSalesTable();
-                Console.WriteLine("Pressione qualquer tecla para retornar ao menu de criação de tabelas individuais.");
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
             case "8":
                 Console.Clear();
                 await barberShopService.CreateBarberShopAppointmentsServicesTable();
-                Console.WriteLine("Pressione qualquer tecla para retornar ao menu de criação de tabelas individuais.");
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
             case "9":
                 Console.Clear();
                 await barberShopService.CreateBarberShopSaleDetailsTable();
-                Console.WriteLine("Pressione qualquer tecla para retornar ao menu de criação de tabelas individuais.");
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
@@ -223,7 +238,8 @@ async Task CreateTablesIndividual()
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("Retornando ao menu base...");
                 Console.ResetColor();
-                Utils.PauseAndClean();
+                await Task.Delay(100);
+                Console.Clear();
                 break;
             default:
                 break;

@@ -6,8 +6,8 @@ using GestaoDeBarbearia.Exception.ExceptionsBase;
 namespace GestaoDeBarbearia.Application.UseCases.Products;
 public class GetProductByIdUseCase
 {
-    private IProductRepository productRepository;
-    public GetProductByIdUseCase(IProductRepository productRepository)
+    private IProductsRepository productRepository;
+    public GetProductByIdUseCase(IProductsRepository productRepository)
     {
         this.productRepository = productRepository;
     }

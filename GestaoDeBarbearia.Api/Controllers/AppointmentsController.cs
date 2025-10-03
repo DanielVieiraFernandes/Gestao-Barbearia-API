@@ -1,7 +1,7 @@
 ﻿using GestaoDeBarbearia.Application.UseCases.Appointments;
 using GestaoDeBarbearia.Communication.Requests;
 using GestaoDeBarbearia.Communication.Responses;
-using GestaoDeBarbearia.Domain.Pagination;
+using GestaoDeBarbearia.Domain.Pagination.Appointments;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestaoDeBarbearia.Api.Controllers;

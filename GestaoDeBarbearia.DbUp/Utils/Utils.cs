@@ -12,7 +12,10 @@ public class Utils
 
     public static void PauseAndClean()
     {
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.WriteLine("\nPressione qualquer tecla para continuar...");
         Console.ReadKey();
         Console.Clear();
+        Console.ResetColor();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using GestaoDeBarbearia.Application.UseCases.Appointments;
 using GestaoDeBarbearia.Application.UseCases.Products;
+using GestaoDeBarbearia.Application.UseCases.Sales;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GestaoDeBarbearia.Application;
@@ -19,5 +20,8 @@ public static class DependecyInjectionExtension
         services.AddScoped<GetProductByIdUseCase>();
         services.AddScoped<FetchProductsUseCase>();
         services.AddScoped<UpdateProductUseCase>();
+
+        // Casos de uso de vendas
+        services.AddScoped<RegisterSaleUseCase>();
     }
 }

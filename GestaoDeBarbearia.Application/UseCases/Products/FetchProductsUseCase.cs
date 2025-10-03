@@ -1,12 +1,12 @@
 ﻿using GestaoDeBarbearia.Communication.Responses;
-using GestaoDeBarbearia.Domain.Pagination;
+using GestaoDeBarbearia.Domain.Pagination.Products;
 using GestaoDeBarbearia.Domain.Repositories;
 
 namespace GestaoDeBarbearia.Application.UseCases.Products;
 public class FetchProductsUseCase
 {
-    private IProductRepository productRepository;
-    public FetchProductsUseCase(IProductRepository productRepository)
+    private IProductsRepository productRepository;
+    public FetchProductsUseCase(IProductsRepository productRepository)
     {
         this.productRepository = productRepository;
     }

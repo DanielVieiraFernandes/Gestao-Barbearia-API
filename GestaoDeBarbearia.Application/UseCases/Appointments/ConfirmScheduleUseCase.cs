@@ -5,8 +5,8 @@ using GestaoDeBarbearia.Exception.ExceptionsBase;
 namespace GestaoDeBarbearia.Application.UseCases.Appointments;
 public class ConfirmScheduleUseCase
 {
-    private IScheduleRepository scheduleRepository;
-    public ConfirmScheduleUseCase(IScheduleRepository scheduleRepository)
+    private ISchedulesRepository scheduleRepository;
+    public ConfirmScheduleUseCase(ISchedulesRepository scheduleRepository)
     {
         this.scheduleRepository = scheduleRepository;
     }

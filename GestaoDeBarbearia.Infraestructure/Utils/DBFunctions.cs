@@ -18,7 +18,7 @@ public class DBFunctions
         return connection;
     }
 
-    public string CreateInsertQuery<T>(string tableName)
+    public static string CreateInsertQuery<T>(string tableName)
     {
         Type type = typeof(T);
         PropertyInfo[] props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
@@ -39,12 +39,12 @@ public class DBFunctions
             parameters.Add($"@{prop.Name}");
         }
 
-        string insertSQL = $"INSERT INTO {tableName} ({string.Join(", ", columns)}) VALUES ({string.Join(", ", parameters)});";
+        string insertSQL = $"INSERT INTO {tableName} ({string.Join(", ", columns)}) VALUES ({string.Join(", ", parameters)})";
 
         return insertSQL;
     }
 
-    public string CreateUpdateQuery<T>(string tableName)
+    public static string CreateUpdateQuery<T>(string tableName)
     {
         Type type = typeof(T);
         PropertyInfo[] props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);

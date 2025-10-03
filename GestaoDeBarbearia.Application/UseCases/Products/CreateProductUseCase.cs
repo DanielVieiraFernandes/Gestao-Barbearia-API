@@ -5,9 +5,9 @@ using GestaoDeBarbearia.Domain.Repositories;
 namespace GestaoDeBarbearia.Application.UseCases.Products;
 public class CreateProductUseCase
 {
-    private IProductRepository productRepository;
+    private IProductsRepository productRepository;
 
-    public CreateProductUseCase(IProductRepository productRepository)
+    public CreateProductUseCase(IProductsRepository productRepository)
     {
         this.productRepository = productRepository;
     }

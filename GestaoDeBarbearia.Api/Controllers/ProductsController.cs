@@ -1,7 +1,7 @@
 ﻿using GestaoDeBarbearia.Application.UseCases.Products;
 using GestaoDeBarbearia.Communication.Requests;
 using GestaoDeBarbearia.Communication.Responses;
-using GestaoDeBarbearia.Domain.Pagination;
+using GestaoDeBarbearia.Domain.Pagination.Products;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestaoDeBarbearia.Api.Controllers;

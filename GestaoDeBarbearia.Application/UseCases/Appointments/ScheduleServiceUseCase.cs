@@ -7,8 +7,8 @@ using GestaoDeBarbearia.Exception.ExceptionsBase;
 namespace GestaoDeBarbearia.Application.UseCases.Appointments;
 public class ScheduleServiceUseCase
 {
-    private IScheduleRepository scheduleRepository;
-    public ScheduleServiceUseCase(IScheduleRepository scheduleRepository)
+    private ISchedulesRepository scheduleRepository;
+    public ScheduleServiceUseCase(ISchedulesRepository scheduleRepository)
     {
         this.scheduleRepository = scheduleRepository;
     }

@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using Dapper;
+using GestaoDeBarbearia.DbUp.Utils;
 using GestaoDeBarbearia.Domain.Entities;
 using GestaoDeBarbearia.Domain.Enums;
 using Npgsql;
@@ -114,6 +115,48 @@ internal class SeedService
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("seed de funcionários executado com sucesso!");
+            Console.ResetColor();
+        }
+        catch (Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Exceção no método {MethodBase.GetCurrentMethod()!.Name}. Erro: \n {ex.Message}");
+            Console.ResetColor();
+        }
+    }
+
+    public static async Task RunSeedInProducts(NpgsqlConnection connection, int numberOfRecords)
+    {
+        try
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("Executando seed de produtos...");
+            Console.ResetColor();
+
+            var fakerProduct = new Faker<Product>("pt_BR")
+            .RuleFor(p => p.Id, f => f.IndexFaker + 1)
+            .RuleFor(p => p.Name, f => f.Commerce.ProductName())
+            .RuleFor(p => p.SalePrice, f => f.Random.Long(min: 500, max: 50000))
+            .RuleFor(p => p.UnitCost, (f, p) => f.Random.Long(min: 200, max: p.SalePrice))
+            .RuleFor(p => p.Quantity, f => f.Random.Long(min: 0, max: 200))
+            .RuleFor(p => p.MinimumStock, f => f.Random.Int(min: 1, max: 20))
+            .RuleFor(p => p.CreatedAt, f => f.Date.Past(2))
+            .RuleFor(p => p.UpdatedAt, (f, p) => f.Date.Between(p.CreatedAt, DateTime.Now));
+
+            List<Product> products = fakerProduct.Generate(numberOfRecords);
+
+            string sql;
+
+            sql = "TRUNCATE TABLE barber_shop_products RESTART IDENTITY CASCADE;";
+
+            await connection.ExecuteAsync(sql.ToString());
+
+            sql = DBFunctionsDbUp.CreateInsertQuery<Product>("barber_shop_products");
+
+            await connection.ExecuteAsync(sql, products);
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("seed de produtos executado com sucesso!");
             Console.ResetColor();
         }
         catch (Exception ex)
