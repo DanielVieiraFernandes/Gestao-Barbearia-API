@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\GestaoDeBarbearia.Application.csproj" />
+    <ProjectReference Include="..\GestaoDeBarbearia.Application\GestaoDeBarbearia.Application.csproj" />
     <ProjectReference Include="..\GestaoDeBarbearia.Communication\GestaoDeBarbearia.Communication.csproj" />
     <ProjectReference Include="..\GestaoDeBarbearia.Exception\GestaoDeBarbearia.Exception.csproj" />
     <ProjectReference Include="..\GestaoDeBarbearia.Infraestructure\GestaoDeBarbearia.Infraestructure.csproj" />

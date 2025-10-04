@@ -1,4 +1,5 @@
-﻿using GestaoDeBarbearia.Communication.Responses;
+﻿using GestaoDeBarbearia.Api.Utils;
+using GestaoDeBarbearia.Communication.Responses;
 using GestaoDeBarbearia.Exception;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -9,6 +10,9 @@ public class ExceptionFilter : IExceptionFilter
 {
     public void OnException(ExceptionContext context)
     {
+        // Grava o log do erro em um arquivo de texto
+        RecordErrorLog.RecordLog(context.Exception);
+
         // Caso seja uma instância da classe personalizada de exceção
         if (context.Exception is GestaoDeBarbeariaException)
             HandleProjectException(context);
@@ -23,6 +27,7 @@ public class ExceptionFilter : IExceptionFilter
 
         context.HttpContext.Response.StatusCode = gestaoDeBarbeariaException.StatusCode;
         context.Result = new ObjectResult(errorResponse);
+
     }
 
     private void ThrowUnknownException(ExceptionContext context)
