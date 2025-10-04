@@ -61,4 +61,19 @@ public class DBFunctions
         string updateSQL = $"UPDATE {tableName} SET {string.Join(", ", setClauses)} WHERE id = @Id;";
         return updateSQL;
     }
+
+    public static string CreateSelectAllQuery(string tableName)
+    {
+        return $"SELECT * FROM {tableName};";
+    }
+
+    public static string CreateSelectByIdQuery(string tableName, string? idColumn = null)
+    {
+        return $"SELECT * FROM {tableName} WHERE id = " + idColumn ?? "Id;";
+    }
+
+    public static string CreateDeleteQuery(string tableName)
+    {
+        return $"DELETE FROM {tableName} WHERE id = @Id;";
+    }
 }

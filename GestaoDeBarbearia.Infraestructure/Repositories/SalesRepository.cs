@@ -97,14 +97,32 @@ public class SalesRepository : ISalesRepository
         return (createdSale, [.. createdSaleDetails]);
     }
 
-    public Task<Sale> FindById(long id)
+    public async Task<Sale> FindById(long id)
     {
-        throw new NotImplementedException();
+        await using var connection = await dbFunctions.CreateNewConnection();
+
+        string sql = DBFunctions.CreateSelectByIdQuery("barber_shop_sales");
+
+        var sale = await connection.QuerySingleOrDefaultAsync<Sale>(sql, new { Id = id });
+
+        if (sale is null)
+            throw new NotFoundException("Venda não encontrada");
+
+        return sale;
     }
 
-    public Task<List<SaleDetails>> FindDetailsById(long saleId)
+    public async Task<List<SaleDetails>> FindDetailsById(long saleId)
     {
-        throw new NotImplementedException();
+        await using var connection = await dbFunctions.CreateNewConnection();
+
+        string sql = DBFunctions.CreateSelectByIdQuery("barber_shop_sale_details", "saleid");
+
+        var saleDetails = await connection.QueryAsync<SaleDetails>(sql, new { SaleId = saleId });
+
+        if (saleDetails is null || !saleDetails.Any())
+            throw new NotFoundException("Detalhes da venda não encontrados");
+
+        return [.. saleDetails];
     }
 
     public Task<List<Sale>> GetAll(RequestSalesPaginationParamsJson? paginationParams = null)

@@ -24,5 +24,6 @@ public class ConfirmScheduleUseCase
         appointment.Status = AppointmentStatus.Confirmed;
 
         await scheduleRepository.Update(appointment);
+
     }
 }

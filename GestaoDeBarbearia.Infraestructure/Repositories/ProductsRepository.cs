@@ -50,11 +50,14 @@ public class ProductsRepository : IProductsRepository
 
         var result = await connection.QueryAsync<Product>(sql.ToString(), paginationParams);
 
+
         if (result is null || !result.Any())
             return [];
 
         // Equivalente a result.ToList()
         return [.. result];
+
+        
     }
 
     public async Task Update(Product product)

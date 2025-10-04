@@ -4,25 +4,6 @@ using Npgsql;
 
 Console.Title = "Gerenciador do Banco de Dados";
 
-while (true)
-{
-    Utils.ShowHeader();
-
-    Console.Write("Digite a senha para entrar: ");
-
-    if (Console.ReadLine() != "c6628901d4")
-    {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine("Senha incorreta! tente novamente...");
-        Console.ResetColor();
-        Utils.PauseAndClean();
-        continue;
-    }
-
-    Console.Clear();
-    break;
-}
-
 byte op = 0;
 
 await using NpgsqlConnection connection = new("Host=localhost;Database=barbearia;Port=5432;Username=postgres;Password=compras");
@@ -40,7 +21,6 @@ while (op != 3)
     Console.WriteLine("2 - CRIAR TABELAS NO BANCO (INDIVIDUAL)");
     Console.ForegroundColor = ConsoleColor.DarkYellow;
     Console.WriteLine("3 - SELECIONAR TABELA PARA RODAR SEED");
-
     Console.ResetColor();
     Console.Write("\nEscolha uma opção: ");
 
