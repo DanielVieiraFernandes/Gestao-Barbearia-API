@@ -1,0 +1,88 @@
+{
+  "tabelas": [
+    {
+      "anexo": "Anexo I",
+      "descricao": "Comércio (Revenda de Mercadorias)",
+      "faixas": [
+        {
+          "faixa": "1",
+          "faturamento_ate": 180000.00,
+          "aliquota": 4.00,
+          "parcela_a_deduzir": 0
+        },
+        {
+          "faixa": "2",
+          "faturamento_ate": 360000.00,
+          "aliquota": 7.30,
+          "parcela_a_deduzir": 5940.00
+        },
+        {
+          "faixa": "3",
+          "faturamento_ate": 720000.00,
+          "aliquota": 9.50,
+          "parcela_a_deduzir": 13860.00
+        },
+        {
+          "faixa": "4",
+          "faturamento_ate": 1800000.00,
+          "aliquota": 10.70,
+          "parcela_a_deduzir": 22500.00
+        },
+        {
+          "faixa": "5",
+          "faturamento_ate": 3600000.00,
+          "aliquota": 14.30,
+          "parcela_a_deduzir": 87300.00
+        },
+        {
+          "faixa": "6",
+          "faturamento_ate": 4800000.00,
+          "aliquota": 19.00,
+          "parcela_a_deduzir": 378000.00
+        }
+      ]
+    },
+    {
+      "anexo": "Anexo III",
+      "descricao": "Serviços (Barbearias, salões, etc.)",
+      "faixas": [
+        {
+          "faixa": "1",
+          "faturamento_ate": 180000.00,
+          "aliquota": 6.00,
+          "parcela_a_deduzir": 0
+        },
+        {
+          "faixa": "2",
+          "faturamento_ate": 360000.00,
+          "aliquota": 11.20,
+          "parcela_a_deduzir": 9360.00
+        },
+        {
+          "faixa": "3",
+          "faturamento_ate": 720000.00,
+          "aliquota": 13.50,
+          "parcela_a_deduzir": 17640.00
+        },
+        {
+          "faixa": "4",
+          "faturamento_ate": 1800000.00,
+          "aliquota": 16.00,
+          "parcela_a_deduzir": 35640.00
+        },
+        {
+          "faixa": "5",
+          "faturamento_ate": 3600000.00,
+          "aliquota": 21.00,
+          "parcela_a_deduzir": 125640.00
+        },
+        {
+          "faixa": "6",
+          "faturamento_ate": 4800000.00,
+          "aliquota": 33.00,
+          "parcela_a_deduzir": 648000.00
+        }
+      ]
+    }
+  ]
+}

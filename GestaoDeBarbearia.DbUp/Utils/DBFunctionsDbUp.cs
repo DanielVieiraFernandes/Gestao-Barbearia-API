@@ -46,4 +46,24 @@ public class DBFunctionsDbUp
         string updateSQL = $"UPDATE {tableName} SET {string.Join(", ", setClauses)} WHERE id = @Id;";
         return updateSQL;
     }
+
+    //public static string CreateCreateTableQuery<T>(string tableName, List<string> excludeProps)
+    //{
+    //    PropertyInfo[] props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+    //    List<string> columns = [];
+
+    //    foreach (var prop in props)
+    //    {
+    //        // Caso essa propriedade esteja dentro da lista, não irei incluir na query final
+    //        if (excludeProps.Contains(prop.Name))
+    //            continue;
+
+
+
+
+    //        columns.Add(prop.Name.ToLower());
+    //    }
+
+    //    return $"CREATE TABLE {tableName} ({string.Join});";
+    //}
 }

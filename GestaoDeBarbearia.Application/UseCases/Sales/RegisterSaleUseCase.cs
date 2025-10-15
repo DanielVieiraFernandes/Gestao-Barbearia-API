@@ -19,7 +19,7 @@ public class RegisterSaleUseCase
             SaleDate = request.SaleDate,
         };
 
-        List<SaleDetails> saleDetails = request.detailsProductSale.Select(d =>
+        List<SaleDetails> saleDetails = request.DetailsProductSale.Select(d =>
         {
             return new SaleDetails
             {

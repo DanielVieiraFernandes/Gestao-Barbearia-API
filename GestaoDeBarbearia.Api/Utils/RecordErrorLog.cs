@@ -14,9 +14,13 @@ public class RecordErrorLog
     public static void RecordLog(System.Exception exception)
     {
         //var path = Path.Combine(Directory.GetCurrentDirectory(), "ErrorLog.txt");
+
+        // Com isso, ele cria um arquivo de log por dia
+        string fileName = DateOnly.FromDateTime(DateTime.Now).ToString("yyyy-MM-dd") + "-log.txt";
+
         var assembly = Assembly.GetExecutingAssembly();
         var directoryName = Path.GetDirectoryName(assembly.Location);
-        var path = Path.Combine(directoryName!, "ErrorLog.txt");
+        var path = Path.Combine(directoryName!, fileName);
 
         string logMessage = $@"
 --------------------------------------------------

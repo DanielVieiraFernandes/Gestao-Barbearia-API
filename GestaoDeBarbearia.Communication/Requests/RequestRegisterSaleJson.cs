@@ -7,5 +7,5 @@ public class RequestRegisterSaleJson
     public DateTime SaleDate { get; set; }
 
     [MinLength(1, ErrorMessage = "É necessário pelo menos 1 item na venda.")]
-    public List<RequestDetailsProductSaleJson> detailsProductSale { get; set; } = default!;
+    public List<RequestDetailsProductSaleJson> DetailsProductSale { get; set; } = default!;
 }

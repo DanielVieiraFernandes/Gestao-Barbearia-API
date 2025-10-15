@@ -58,7 +58,7 @@ public class DBFunctions
                 continue;
             setClauses.Add($"{prop.Name.ToLower()} = @{prop.Name}");
         }
-        string updateSQL = $"UPDATE {tableName} SET {string.Join(", ", setClauses)} WHERE id = @Id;";
+        string updateSQL = $"UPDATE {tableName} SET {string.Join(", ", setClauses)} WHERE id = @Id";
         return updateSQL;
     }
 
@@ -67,9 +67,9 @@ public class DBFunctions
         return $"SELECT * FROM {tableName};";
     }
 
-    public static string CreateSelectByIdQuery(string tableName, string? idColumn = null)
+    public static string CreateSelectByIdQuery(string tableName, string idColumn = "Id")
     {
-        return $"SELECT * FROM {tableName} WHERE id = " + idColumn ?? "Id;";
+        return $"SELECT * FROM {tableName} WHERE {idColumn.ToLower()} = @{idColumn}";
     }
 
     public static string CreateDeleteQuery(string tableName)

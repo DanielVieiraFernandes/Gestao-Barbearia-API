@@ -18,4 +18,8 @@
     <ProjectReference Include="..\GestaoDeBarbearia.Exception\GestaoDeBarbearia.Exception.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\Billing\Reports\Pdf\" />
+  </ItemGroup>
+
 </Project>

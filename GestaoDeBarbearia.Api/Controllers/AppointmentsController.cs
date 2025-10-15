@@ -36,7 +36,7 @@ public class AppointmentsController : ControllerBase
     /// Essa ação é geralmente executada por um funcionário para reconhecer o agendamento.
     /// </summary>
     /// <param name="useCase"></param>
-    /// <param name="id"></param>
+    /// <param name="appointmentid"></param>
     /// <returns></returns>
     [HttpPatch("{appointmentid:long}/confirm")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

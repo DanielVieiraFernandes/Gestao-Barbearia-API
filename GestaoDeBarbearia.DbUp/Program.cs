@@ -9,7 +9,7 @@ byte op = 0;
 await using NpgsqlConnection connection = new("Host=localhost;Database=barbearia;Port=5432;Username=postgres;Password=compras");
 connection.Open();
 
-BarberShopService barberShopService = new(connection);
+BarberShopDatabaseService barberShopDatabaseService = new(connection);
 
 while (op != 3)
 {
@@ -121,14 +121,16 @@ while (op != 3)
 
 async Task CreateTablesGeneral()
 {
-    await barberShopService.CreateBarberShopServicesTable();
-    await barberShopService.CreateBarberShopClientsTable();
-    await barberShopService.CreateBarberShopEmployeesTable();
-    await barberShopService.CreateBarberShopAppointmentsTable();
-    await barberShopService.CreateBarberShopAppointmentsServicesTable();
-    await barberShopService.CreateBarberShopProductsTable();
-    await barberShopService.CreateBarberShopSalesTable();
-    await barberShopService.CreateBarberShopSaleDetailsTable();
+    await barberShopDatabaseService.CreateBarberShopServicesTable();
+    await barberShopDatabaseService.CreateBarberShopClientsTable();
+    await barberShopDatabaseService.CreateBarberShopEmployeesTable();
+    await barberShopDatabaseService.CreateBarberShopAppointmentsTable();
+    await barberShopDatabaseService.CreateBarberShopAppointmentsServicesTable();
+    await barberShopDatabaseService.CreateBarberShopProductsTable();
+    await barberShopDatabaseService.CreateBarberShopSalesTable();
+    await barberShopDatabaseService.CreateBarberShopSaleDetailsTable();
+    await barberShopDatabaseService.CreateBarberShopImpostosTable();
+    await barberShopDatabaseService.CreateBarberShopExpensesTable();
 
     Console.ForegroundColor = ConsoleColor.DarkGreen;
     Console.WriteLine("\nTabelas no banco criadas com sucesso!");
@@ -144,21 +146,22 @@ async Task CreateTablesIndividual()
         Utils.ShowHeader();
 
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine("-> 10 - RETORNAR AO MENU PRINCIPAL\n");
+        Console.WriteLine("-> 11 - RETORNAR AO MENU PRINCIPAL\n");
         Console.ResetColor();
 
         Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        Console.WriteLine("| 1 - CRIAR TABELA DE SERVIÇOS                           |");
-        Console.WriteLine("| 2 - CRIAR TABELA DE AGENDAMENTOS                       |");
-        Console.WriteLine("| 3 - CRIAR TABELA DE CLIENTES                           |");
-        Console.WriteLine("| 4 - CRIAR TABELA DE FUNCIONÁRIOS                       |");
-        Console.WriteLine("| 5 - CRIAR TABELA DE PRODUTOS                           |");
-        Console.WriteLine("| 6 - CRIAR TABELA DE VENDAS                             |");
-        Console.WriteLine("| 7 - CRIAR TABELA DE DESPESAS                           |");
-        Console.WriteLine("| 8 - CRIAR TABELA INTERMEDIÁRIA (services_appointments) |");
-        Console.WriteLine("| 9 - CRIAR TABELA INTERMEDIÁRIA (sale_details)          |");
-        Console.WriteLine("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n");
+        Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        Console.WriteLine("| 1  <-> CRIAR TABELA DE SERVIÇOS                           |");
+        Console.WriteLine("| 2  <-> CRIAR TABELA DE AGENDAMENTOS                       |");
+        Console.WriteLine("| 3  <-> CRIAR TABELA DE CLIENTES                           |");
+        Console.WriteLine("| 4  <-> CRIAR TABELA DE FUNCIONÁRIOS                       |");
+        Console.WriteLine("| 5  <-> CRIAR TABELA DE PRODUTOS                           |");
+        Console.WriteLine("| 6  <-> CRIAR TABELA DE VENDAS                             |");
+        Console.WriteLine("| 7  <-> CRIAR TABELA DE DESPESAS                           |");
+        Console.WriteLine("| 8  <-> CRIAR TABELA INTERMEDIÁRIA (services_appointments) |");
+        Console.WriteLine("| 9  <-> CRIAR TABELA INTERMEDIÁRIA (sale_details)          |");
+        Console.WriteLine("| 10 <-> CRIAR TABELA DE IMPOSTOS (SIMPLES NACIONAL)        |");
+        Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n");
         Console.ResetColor();
 
         Console.Write("Escolha uma opção: ");
@@ -167,53 +170,64 @@ async Task CreateTablesIndividual()
         {
             case "1":
                 Console.Clear();
-                await barberShopService.CreateBarberShopServicesTable();
+                await barberShopDatabaseService.CreateBarberShopServicesTable();
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
             case "2":
                 Console.Clear();
-                await barberShopService.CreateBarberShopAppointmentsTable();
+                await barberShopDatabaseService.CreateBarberShopAppointmentsTable();
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
             case "3":
                 Console.Clear();
-                await barberShopService.CreateBarberShopClientsTable();
+                await barberShopDatabaseService.CreateBarberShopClientsTable();
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
             case "4":
                 Console.Clear();
-                await barberShopService.CreateBarberShopEmployeesTable();
+                await barberShopDatabaseService.CreateBarberShopEmployeesTable();
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
             case "5":
                 Console.Clear();
-                await barberShopService.CreateBarberShopProductsTable();
+                await barberShopDatabaseService.CreateBarberShopProductsTable();
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
             case "6":
                 Console.Clear();
-                await barberShopService.CreateBarberShopSalesTable();
+                await barberShopDatabaseService.CreateBarberShopSalesTable();
+                Utils.PauseAndClean();
+                Console.Clear();
+                break;
+            case "7":
+                Console.Clear();
+                await barberShopDatabaseService.CreateBarberShopExpensesTable();
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
             case "8":
                 Console.Clear();
-                await barberShopService.CreateBarberShopAppointmentsServicesTable();
+                await barberShopDatabaseService.CreateBarberShopAppointmentsServicesTable();
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
             case "9":
                 Console.Clear();
-                await barberShopService.CreateBarberShopSaleDetailsTable();
+                await barberShopDatabaseService.CreateBarberShopSaleDetailsTable();
                 Utils.PauseAndClean();
                 Console.Clear();
                 break;
             case "10":
+                Console.Clear();
+                await barberShopDatabaseService.CreateBarberShopImpostosTable();
+                Utils.PauseAndClean();
+                break;
+            case "11":
                 op = 5;
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("Retornando ao menu base...");

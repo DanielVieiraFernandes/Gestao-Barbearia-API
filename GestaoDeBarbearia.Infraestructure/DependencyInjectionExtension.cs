@@ -15,5 +15,7 @@ public static class DependencyInjectionExtension
         services.AddScoped<ISchedulesRepository, SchedulesRepository>();
         services.AddScoped<IProductsRepository, ProductsRepository>();
         services.AddScoped<ISalesRepository, SalesRepository>();
+        services.AddScoped<IImpostosRepository, ImpostosRepository>();
+        services.AddScoped<IExpensesRepository, ExpensesRepository>();
     }
 }

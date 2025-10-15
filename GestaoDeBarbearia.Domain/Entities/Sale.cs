@@ -5,4 +5,5 @@ public class Sale
     public DateTime SaleDate { get; set; }
     public long SaleTotal { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public List<SaleDetails> Details { get; set; } = [];
 }

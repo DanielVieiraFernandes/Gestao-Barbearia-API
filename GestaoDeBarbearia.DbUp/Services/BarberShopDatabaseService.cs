@@ -1,5 +1,7 @@
 ﻿using Dapper;
 using GestaoDeBarbearia.DbUp.Models;
+using GestaoDeBarbearia.DbUp.Utils;
+using GestaoDeBarbearia.Domain.Entities;
 using Npgsql;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -7,7 +9,7 @@ using System.Text;
 using System.Text.Json;
 
 namespace GestaoDeBarbearia.DbUp.Services;
-internal class BarberShopService
+internal class BarberShopDatabaseService
 {
     private readonly NpgsqlConnection connection;
     private readonly string FilePath;
@@ -19,8 +21,7 @@ internal class BarberShopService
         Console.ResetColor();
     }
 
-
-    public BarberShopService(NpgsqlConnection connection)
+    public BarberShopDatabaseService(NpgsqlConnection connection)
     {
         this.connection = connection;
 
@@ -378,6 +379,148 @@ internal class BarberShopService
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Tabela de detalhes da venda criada com sucesso!");
+            Console.ResetColor();
+        }
+        catch (Exception ex)
+        {
+            LogErro(ex);
+        }
+    }
+
+    public async Task CreateBarberShopExpensesTable()
+    {
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("Criando tabela de despesas...");
+        Console.ResetColor();
+        try
+        {
+            StringBuilder sql = new();
+
+            sql.Append("DROP TABLE IF EXISTS barber_shop_expenses CASCADE; ");
+
+            await connection.ExecuteAsync(sql.ToString());
+
+            sql.Clear();
+
+            sql.Append("CREATE TABLE barber_shop_expenses ( ");
+            sql.Append("id BIGSERIAL PRIMARY KEY, ");
+            sql.Append("duedate DATE NOT NULL, ");
+            sql.Append("paymentdate TIMESTAMP WITHOUT TIME ZONE NULL DEFAULT NULL, ");
+            sql.Append("amount NUMERIC(15,2) NOT NULL, ");
+            sql.Append("paidamount NUMERIC(15,2) NOT NULL, ");
+            sql.Append("amountofinstallment NUMERIC(15,2) NULL DEFAULT NULL, ");
+            sql.Append("status INT NOT NULL DEFAULT 1, ");
+            sql.Append("supplier VARCHAR(255) NOT NULL, ");
+            sql.Append("notes TEXT NULL DEFAULT NULL, ");
+            sql.Append("recurrence INT NOT NULL DEFAULT 1, ");
+            sql.Append("totalinstallments BIGINT NULL DEFAULT NULL,");
+            sql.Append("paidinstallments BIGINT NULL DEFAULT NULL ");
+            sql.Append("); ");
+
+            await connection.ExecuteAsync(sql.ToString());
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Tabela de despesas criada com sucesso!");
+            Console.ResetColor();
+        }
+        catch (Exception ex)
+        {
+            LogErro(ex);
+        }
+    }
+
+
+    public async Task CreateBarberShopImpostosTable()
+    {
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("Criando tabela de impostos simples nacional...");
+        Console.ResetColor();
+        try
+        {
+            StringBuilder sql = new();
+
+            sql.Append("DROP TABLE IF EXISTS barber_shop_impostos_simples_nacional CASCADE; ");
+
+            await connection.ExecuteAsync(sql.ToString());
+
+            sql.Clear();
+
+            sql.Append("CREATE TABLE barber_shop_impostos_simples_nacional ( ");
+            sql.Append("anexo VARCHAR(9) NOT NULL,");
+            sql.Append("faixa VARCHAR(1) NOT NULL,");
+            sql.Append("faturamentolimiteinferior NUMERIC(9,2) NOT NULL,");
+            sql.Append("faturamentolimitesuperior NUMERIC(9,2) NOT NULL,");
+            sql.Append("aliquota NUMERIC(4,2) NOT NULL,");
+            sql.Append("valoradeduzir NUMERIC(9,2) NOT NULL");
+            sql.Append(");");
+
+            await connection.ExecuteAsync(sql.ToString());
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Tabela de impostos simples nacional criada com sucesso!");
+            Console.ResetColor();
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("Inserindo dados na tabela de impostos...");
+            Console.ResetColor();
+
+            JsonSerializerOptions options = new()
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "Data", "tabelasSimplesNacional.json");
+
+            string simplesNacionalJson = File.ReadAllText(path);
+
+            SimplesNacional? simplesNacionalConvertido = JsonSerializer.Deserialize<SimplesNacional>(simplesNacionalJson, options);
+
+            if (simplesNacionalConvertido is null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Não foi possível carregar as informações dos impostos, verifique o arquivo e tente novamente");
+                Console.ResetColor();
+                return;
+            }
+
+            List<ImpostoSimplesNacional> impostos = [];
+
+            simplesNacionalConvertido.Tabelas.ForEach(t =>
+            {
+                for (int i = 0; i < t.Faixas.Count; i++)
+                {
+                    impostos.Add(
+                        new ImpostoSimplesNacional
+                        {
+                            Anexo = t.Anexo,
+                            Aliquota = t.Faixas[i].Aliquota,
+                            Faixa = t.Faixas[i].Faixa,
+                            // Caso seja a faixa 1, significa que não há um limite inferior anterior a esse
+                            // Logo o limite inferior é zero
+                            FaturamentoLimiteInferior = t.Faixas[i].Faixa == "1" ? 0 : t.Faixas[i - 1].FaturamentoAte + 1,
+                            FaturamentoLimiteSuperior = t.Faixas[i].FaturamentoAte,
+                            ValorADeduzir = t.Faixas[i].ParcelaADeduzir
+                        }
+                    );
+                }
+            });
+
+            sql.Clear();
+
+            sql.Append(DBFunctionsDbUp.CreateInsertQuery<ImpostoSimplesNacional>("barber_shop_impostos_simples_nacional"));
+
+            var linesImpostoCreated = await connection.ExecuteAsync(sql.ToString(), impostos);
+
+            if (linesImpostoCreated != impostos.Count)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Os impostos não foram gravados corretamente no banco de dados, verifique e tente novamente.");
+                Console.ResetColor();
+                return;
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Registros criados na tabela de impostos com sucesso!");
             Console.ResetColor();
         }
         catch (Exception ex)

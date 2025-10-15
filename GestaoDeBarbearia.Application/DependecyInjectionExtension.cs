@@ -1,4 +1,6 @@
 ﻿using GestaoDeBarbearia.Application.UseCases.Appointments;
+using GestaoDeBarbearia.Application.UseCases.Billing.Reports.Excel;
+using GestaoDeBarbearia.Application.UseCases.Expenses;
 using GestaoDeBarbearia.Application.UseCases.Products;
 using GestaoDeBarbearia.Application.UseCases.Sales;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,5 +25,12 @@ public static class DependecyInjectionExtension
 
         // Casos de uso de vendas
         services.AddScoped<RegisterSaleUseCase>();
+
+        // Casos de uso de relatório
+        services.AddScoped<GenerateBillingReportUseCase>();
+
+        // Casos de uso de despesas
+        services.AddScoped<RegisterExpenseUseCase>();
+        services.AddScoped<ExpensePaymentUseCase>();
     }
 }

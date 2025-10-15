@@ -6,8 +6,17 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace GestaoDeBarbearia.Api.Filters;
 
+/// <summary>
+/// Filtro de exceção <br/>
+/// Todas as exceções que são lançadas da aplicação passam por aqui, 
+/// pois essa é a última camada de tratamento
+/// </summary>
 public class ExceptionFilter : IExceptionFilter
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="context"></param>
     public void OnException(ExceptionContext context)
     {
         // Grava o log do erro em um arquivo de texto

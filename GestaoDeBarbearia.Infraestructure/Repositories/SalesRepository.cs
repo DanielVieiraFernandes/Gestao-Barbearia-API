@@ -97,6 +97,40 @@ public class SalesRepository : ISalesRepository
         return (createdSale, [.. createdSaleDetails]);
     }
 
+    public async Task<List<Sale>> FilterSaleAndDetailsByMonth(DateOnly month)
+    {
+        await using var connection = await dbFunctions.CreateNewConnection();
+
+        DateTime startDate = new(month.Year, month.Month, 1);
+        DateTime endDate = new(month.Year, month.Month, DateTime.DaysInMonth(month.Year, month.Month));
+
+        StringBuilder sql = new();
+
+        sql.Append($"SELECT s.*, sd.* FROM barber_shop_sales AS s INNER JOIN ");
+        sql.Append("barber_shop_sale_details AS sd ON sd.saleid = s.id ");
+        sql.Append("WHERE s.saledate >= @StartDate AND s.saledate <= @EndDate ");
+
+        Dictionary<long, Sale> salesDictionary = [];
+
+        await connection.QueryAsync<Sale, SaleDetails, Sale>(sql.ToString(),
+        (sale, saleDetails) =>
+        {
+            if (!salesDictionary.TryGetValue(sale.Id, out var newSale))
+            {
+                newSale = sale;
+
+                salesDictionary.Add(newSale.Id, newSale);
+            }
+
+            if (saleDetails is not null)
+                newSale.Details.Add(saleDetails);
+
+            return sale;
+        }, new { StartDate = startDate, EndDate = endDate }, splitOn: "Id");
+
+        return [.. salesDictionary.Values];
+    }
+
     public async Task<Sale> FindById(long id)
     {
         await using var connection = await dbFunctions.CreateNewConnection();
