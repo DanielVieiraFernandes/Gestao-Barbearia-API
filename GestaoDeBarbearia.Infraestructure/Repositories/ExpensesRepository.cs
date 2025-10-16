@@ -1,7 +1,10 @@
 ﻿using Dapper;
 using GestaoDeBarbearia.Domain.Entities;
+using GestaoDeBarbearia.Domain.Enums;
+using GestaoDeBarbearia.Domain.Pagination.Expenses;
 using GestaoDeBarbearia.Domain.Repositories;
 using GestaoDeBarbearia.Infraestructure.Utils;
+using System.Text;
 
 namespace GestaoDeBarbearia.Infraestructure.Repositories;
 public class ExpensesRepository : IExpensesRepository
@@ -38,9 +41,29 @@ public class ExpensesRepository : IExpensesRepository
         return result;
     }
 
-    public Task<List<Expense>> GetAll()
+    public async Task<List<Expense>> GetAll(RequestExpensesPaginationParamsJson? pagination)
     {
-        throw new NotImplementedException();
+        await using var connection = await dbFunctions.CreateNewConnection();
+
+        StringBuilder sql = new();
+
+        sql.Append("SELECT * FROM barber_shop_expenses ");
+
+        if (pagination != null)
+        {
+            if (pagination.Status != null)
+                sql.Append($"WHERE status = {(int)pagination.Status} ");
+
+            sql.Append($"ORDER BY {pagination.OrderByColumn.ToString().ToLower()} " +
+                $"{pagination.OrderByDirection.GetEnumDescription()}");
+        }
+
+        var result = await connection.QueryAsync<Expense>(sql.ToString(), pagination);
+
+        if (result is null || !result.Any())
+            return [];
+
+        return [.. result];
     }
 
     public async Task<Expense> Save(Expense expense)

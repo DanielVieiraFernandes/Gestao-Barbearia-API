@@ -32,5 +32,7 @@ public static class DependecyInjectionExtension
         // Casos de uso de despesas
         services.AddScoped<RegisterExpenseUseCase>();
         services.AddScoped<ExpensePaymentUseCase>();
+        services.AddScoped<GetExpenseByIdUseCase>();
+        services.AddScoped<FetchAllExpensesUseCase>();
     }
 }
