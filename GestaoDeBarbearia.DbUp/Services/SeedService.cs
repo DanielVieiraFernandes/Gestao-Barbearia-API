@@ -166,4 +166,54 @@ internal class SeedService
             Console.ResetColor();
         }
     }
+
+    public static async Task RunSeedInExpenses(NpgsqlConnection connection, int numberOfRecords)
+    {
+        try
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("Executando seed de despesas...");
+            Console.ResetColor();
+
+            var fakerExpense = new Faker<Expense>("pt_BR")
+                .RuleFor(e => e.Id, f => f.IndexFaker + 1)
+                .RuleFor(e => e.DueDate, f => f.Date.Future(0, DateTime.Now.AddMonths(2))) // próxima fatura
+                .RuleFor(e => e.PaymentDate, (f, e) => f.Random.Bool(0.6f) ? e.DueDate.AddDays(f.Random.Int(-2, 3)) : null)
+                .RuleFor(e => e.Amount, f => f.Finance.Amount(50, 5000))
+                .RuleFor(e => e.PaidAmount, (f, e) => e.PaymentDate != null ? e.Amount : 0)
+                .RuleFor(e => e.AmountOfInstallment, (f, e) => f.Random.Bool(0.3f) ? Math.Round(e.Amount / f.Random.Int(2, 12), 2) : null)
+                .RuleFor(e => e.TotalInstallments, (f, e) => e.AmountOfInstallment.HasValue ? f.Random.Int(2, 12) : null)
+                .RuleFor(e => e.PaidInstallments, (f, e) => e.TotalInstallments.HasValue ? f.Random.Int(0, (int)e.TotalInstallments.Value) : null)
+                .RuleFor(e => e.Recurrence, f => f.PickRandom<Recurrence>())
+                .RuleFor(e => e.Status, (f, e) =>
+                {
+                    if (e.PaymentDate.HasValue)
+                        return ExpenseStatus.Paid;
+                    if (e.DueDate > DateTime.Now)
+                        return ExpenseStatus.Scheduled;
+                    return ExpenseStatus.Pending;
+                })
+                .RuleFor(e => e.Supplier, f => f.Company.CompanyName())
+                .RuleFor(e => e.Notes, f => f.Random.Bool(0.3f) ? f.Lorem.Sentence() : null);
+
+            var expenses = fakerExpense.Generate(numberOfRecords);
+
+            string sql = "TRUNCATE TABLE barber_shop_expenses RESTART IDENTITY CASCADE;";
+            await connection.ExecuteAsync(sql);
+
+            sql = DBFunctionsDbUp.CreateInsertQuery<Expense>("barber_shop_expenses");
+            await connection.ExecuteAsync(sql, expenses);
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Seed de despesas executado com sucesso!");
+            Console.ResetColor();
+        }
+        catch (Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Exceção no método {MethodBase.GetCurrentMethod()?.Name}. Erro: \n{ex.Message}");
+            Console.ResetColor();
+        }
+    }
+
 }

@@ -39,11 +39,16 @@ while (op != 3)
 
             while (true)
             {
-                Console.WriteLine("1 - RODAR SEED DE AGENDAMENTOS");
-                Console.WriteLine("2 - RODAR SEED DE FUNCIONÁRIOS");
-                Console.WriteLine("3 - RODAR SEED DE PRODUTOS");
+                Console.WriteLine("----------------------------------");
+                Console.WriteLine("|       Seeds Disponíveis   :)   |");
+                Console.WriteLine("|                                |");
+                Console.WriteLine("| 1 - RODAR SEED DE AGENDAMENTOS |");
+                Console.WriteLine("| 2 - RODAR SEED DE FUNCIONÁRIOS |");
+                Console.WriteLine("| 3 - RODAR SEED DE PRODUTOS     |");
+                Console.WriteLine("| 4 - RODAR SEED DE DESPESAS     |");
+                Console.WriteLine("----------------------------------");
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("4 - RETORNAR AO MENU PRINCIPAL");
+                Console.WriteLine("X 5 - RETORNAR AO MENU PRINCIPAL X");
                 Console.ResetColor();
 
                 switch (Console.ReadLine())
@@ -93,6 +98,22 @@ while (op != 3)
                                 continue;
                             }
                             await SeedService.RunSeedInProducts(connection, numberOfRecords);
+                            Utils.PauseAndClean();
+                            continue;
+                        }
+                    case "4":
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Quantos registros deseja inserir?");
+                            bool isAInt = int.TryParse(Console.ReadLine(), out int numberOfRecords);
+                            if (!isAInt || numberOfRecords < 1)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("Valor inválido, digite novamente: \n");
+                                Console.ResetColor();
+                                continue;
+                            }
+                            await SeedService.RunSeedInExpenses(connection, numberOfRecords);
                             Utils.PauseAndClean();
                             continue;
                         }
