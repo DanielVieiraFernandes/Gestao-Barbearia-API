@@ -20,6 +20,9 @@ public class BillingReportController : ControllerBase
     {
         byte[] file = await useCase.Execute(month);
 
-        return File(file, MediaTypeNames.Application.Octet, "report.xlsx");
+        DateOnly startDate = DateOnly.FromDateTime(new DateTime(year: month.Year, month: month.Month, day: 1));
+        DateOnly endDate = DateOnly.FromDateTime(new DateTime(year: month.Year, month: month.Month, day: DateTime.DaysInMonth(month.Year, month.Month)));
+
+        return File(file, MediaTypeNames.Application.Octet, $"Relatorio-Faturamento-{startDate}_a_{endDate}.xlsx");
     }
 }

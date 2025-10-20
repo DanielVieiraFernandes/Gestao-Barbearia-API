@@ -10,13 +10,19 @@ public class GenerateBillingReportUseCase
     private readonly ISchedulesRepository schedulesRepository;
     private readonly ISalesRepository salesRepository;
     private readonly IImpostosRepository impostosRepository;
+    private readonly IExpensesRepository expensesRepository;
 
-    public GenerateBillingReportUseCase(ISchedulesRepository schedulesRepository,
-        ISalesRepository salesRepository, IImpostosRepository impostosRepository)
+    public GenerateBillingReportUseCase(
+        ISchedulesRepository schedulesRepository,
+        ISalesRepository salesRepository,
+        IImpostosRepository impostosRepository,
+        IExpensesRepository expensesRepository
+        )
     {
         this.schedulesRepository = schedulesRepository;
         this.salesRepository = salesRepository;
         this.impostosRepository = impostosRepository;
+        this.expensesRepository = expensesRepository;
     }
 
     public async Task<byte[]> Execute(DateOnly month)
@@ -30,6 +36,16 @@ public class GenerateBillingReportUseCase
         ImpostoSimplesNacional impostoProduct = await impostosRepository.GetByType(FiscalType.Product, totalBillingSales);
         ImpostoSimplesNacional impostoService = await impostosRepository.GetByType(FiscalType.Service, totalBillingServices);
 
+        DateTime startDate = new(year: month.Year, month: month.Month, day: 1);
+        DateTime endDate = new(year: month.Year, month: month.Month, day: DateTime.DaysInMonth(month.Year, month.Month));
+
+        decimal totalExpensesAmount = await expensesRepository.GetTotalAmount(startDate, endDate);
+
+        decimal salesTaxesValue = (totalBillingServices * impostoService.Aliquota) / 100;
+
+        decimal serviceTaxesValue = (totalBillingSales * impostoProduct.Aliquota) / 100;
+
+        decimal clearAmount = ((totalBillingServices + totalBillingSales) - serviceTaxesValue - salesTaxesValue) - totalExpensesAmount;
 
         using (var workbook = new XLWorkbook())
         {
@@ -42,38 +58,40 @@ public class GenerateBillingReportUseCase
             relatorioSheet.Range("A1:D1").Merge().Style.Font.Bold = true;
             relatorioSheet.Range("A1:D1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
+            // Faturamento
             relatorioSheet.Cell("A3").Value = "Faturamento Bruto Total";
-            relatorioSheet.Cell("B3").Value = totalBillingServices + totalBillingSales;
+            relatorioSheet.Cell("B3").Value = totalBillingServices;
+            relatorioSheet.Cell("C3").Value = totalBillingSales;
             relatorioSheet.Cell("B3").Style.NumberFormat.Format = "\"R$\" #,##0.00";
+            relatorioSheet.Cell("C3").Style.NumberFormat.Format = "\"R$\" #,##0.00";
 
-            decimal salesTaxesValue = (totalBillingServices * impostoService.Aliquota) / 100;
-
+            // Impostos sobre Serviços
             relatorioSheet.Cell("A4").Value = "Impostos sobre Serviços";
             relatorioSheet.Cell("B4").Value = salesTaxesValue;
+            relatorioSheet.Cell("D4").Value = impostoService.Aliquota;
             relatorioSheet.Cell("B4").Style.NumberFormat.Format = "\"R$\" #,##0.00";
-            relatorioSheet.Cell("C4").Value = impostoService.Aliquota; // Ex.: 0.05 para 5%
-            //relatorioSheet.Cell("C4").Style.NumberFormat.Format = "0.00%";
+            relatorioSheet.Cell("D4").Style.NumberFormat.Format = "0.00%";
 
-            decimal serviceTaxesValue = (totalBillingSales * impostoProduct.Aliquota) / 100;
-
+            // Impostos sobre Vendas
             relatorioSheet.Cell("A5").Value = "Impostos sobre Vendas";
-            relatorioSheet.Cell("B5").Value = serviceTaxesValue;
-            relatorioSheet.Cell("B5").Style.NumberFormat.Format = "\"R$\" #,##0.00";
-            relatorioSheet.Cell("C5").Value = impostoProduct.Aliquota;
-            //relatorioSheet.Cell("C5").Style.NumberFormat.Format = "0.00%";
+            relatorioSheet.Cell("C5").Value = serviceTaxesValue;
+            relatorioSheet.Cell("D5").Value = impostoProduct.Aliquota;
+            relatorioSheet.Cell("C5").Style.NumberFormat.Format = "\"R$\" #,##0.00";
+            relatorioSheet.Cell("D5").Style.NumberFormat.Format = "0.00%";
 
+            // Valor das Despesas
+            relatorioSheet.Cell("A7").Value = "Despesas Totais";
+            relatorioSheet.Cell("B7").Value = totalExpensesAmount;
+            relatorioSheet.Cell("B7").Style.NumberFormat.Format = "\"R$\" #,##0.00";
 
-            relatorioSheet.Cell("A6").Value = "Receita Líquida";
-            relatorioSheet.Cell("B6").Value = (totalBillingServices + totalBillingSales) - serviceTaxesValue - salesTaxesValue;
-            relatorioSheet.Cell("B6").Style.NumberFormat.Format = "\"R$\" #,##0.00";
-            relatorioSheet.Cell("B6").Style.Font.Bold = true;
-
+            // Lucro Líquido
             relatorioSheet.Cell("A8").Value = "Lucro Líquido do Mês";
-            relatorioSheet.Cell("B8").Value = (totalBillingServices + totalBillingSales) - serviceTaxesValue - salesTaxesValue;
+            relatorioSheet.Cell("B8").Value = clearAmount;
             relatorioSheet.Cell("B8").Style.Font.Bold = true;
             relatorioSheet.Cell("B8").Style.NumberFormat.Format = "\"R$\" #,##0.00";
 
-            relatorioSheet.Columns().AdjustToContents(); // Ajusta a largura das colunas
+            // Ajuste de colunas
+            relatorioSheet.Columns().AdjustToContents();
 
 
             // =================================================================
@@ -84,7 +102,6 @@ public class GenerateBillingReportUseCase
             var appointmentsPT = appointments.Select(a => new
             {
                 DataHoraAgendamento = a.AppointmentDateTime,
-                IdServico = a.ServiceId,
                 IdCliente = a.ClientId,
                 IdFuncionario = a.EmployeeId,
                 NomeCliente = a.ClientName,
@@ -142,8 +159,4 @@ public class GenerateBillingReportUseCase
 
     }
 
-    private void InsertHeader(IXLWorksheet worksheet)
-    {
-
-    }
 }

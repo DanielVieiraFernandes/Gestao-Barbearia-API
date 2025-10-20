@@ -1,12 +1,27 @@
 ﻿using GestaoDeBarbearia.DbUp.Services;
 using GestaoDeBarbearia.DbUp.Utils;
+using Microsoft.Extensions.Configuration;
 using Npgsql;
+
+// =================================================================
+// INICIALIZAÇÃO DA APLICAÇÃO COM LEITURA DO ARQUIVO .INI
+// =================================================================
+
+// Lê o arquivo .ini
+IConfiguration config = new ConfigurationBuilder()
+            .AddIniFile("dbup.ini")
+            .Build();
+
+// Busca a seção referente ao banco de dados
+IConfigurationSection section = config.GetSection("Banco de Dados PostgreSQL");
+
+// =================================================================
 
 Console.Title = "Gerenciador do Banco de Dados";
 
 byte op = 0;
 
-await using NpgsqlConnection connection = new("Host=localhost;Database=barbearia;Port=5432;Username=postgres;Password=compras");
+await using NpgsqlConnection connection = new(section["ConnectionString"]);
 connection.Open();
 
 BarberShopDatabaseService barberShopDatabaseService = new(connection);

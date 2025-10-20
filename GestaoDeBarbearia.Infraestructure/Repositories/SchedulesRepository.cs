@@ -35,11 +35,8 @@ public class SchedulesRepository : ISchedulesRepository
 
         sql.Clear();
 
-        sql.Append("INSERT INTO barber_shop_appointments (appointmentdatetime, clientId, clientname, ");
-        sql.Append("clientphone,employeeId, serviceprice, paymenttype) ");
-        sql.Append("VALUES (@AppointmentDateTime, @ClientId, @ClientName, @ClientPhone, @EmployeeId, ");
-        sql.Append("@ServicePrice, @PaymentType) ");
-        sql.Append("RETURNING *;");
+        sql.Append(DBFunctions.CreateInsertQuery<Appointment>("barber_shop_appointments"));
+        sql.Append(" RETURNING *");
 
         var result = await connection.QuerySingleOrDefaultAsync<Appointment>(sql.ToString(), appointment);
 

@@ -5,7 +5,6 @@ public class Appointment
 {
     public long Id { get; set; }
     public DateTime AppointmentDateTime { get; set; }
-    public long ServiceId { get; set; }
     public long? ClientId { get; set; } = null;
     public string? ClientName { get; set; } = null;
     public string? ClientPhone { get; set; }

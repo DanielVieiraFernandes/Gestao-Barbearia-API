@@ -79,4 +79,22 @@ public class ExpensesRepository : IExpensesRepository
 
         return result;
     }
+
+    public async Task<decimal> GetTotalAmount(DateTime startDate, DateTime endDate)
+    {
+        await using var connection = await dbFunctions.CreateNewConnection();
+
+        DynamicParameters parameters = new();
+
+        string sql = @$"SELECT SUM(amount) FROM barber_shop_expenses WHERE 
+        (paymentdate BETWEEN @StartDate AND @EndDate) AND status = @Status";
+
+        parameters.Add("StartDate", startDate);
+        parameters.Add("EndDate", endDate);
+        parameters.Add("Status", (int)ExpenseStatus.Paid);
+
+        decimal totalAmount = await connection.ExecuteScalarAsync<decimal?>(sql, parameters) ?? 0;
+
+        return totalAmount;
+    }
 }

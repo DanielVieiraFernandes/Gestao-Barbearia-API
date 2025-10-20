@@ -19,7 +19,6 @@ internal class SeedService
 
             var fakerAppointment = new Faker<Appointment>("pt_BR")
              .RuleFor(a => a.AppointmentDateTime, f => f.Date.Soon(days: 30))
-             .RuleFor(a => a.ServiceId, f => f.Random.Long(min: 1, max: 10))
              .RuleFor(a => a.ClientId, f => null)
              .RuleFor(a => a.ClientName, f => f.Person.FullName)
              .RuleFor(a => a.ClientPhone, f => f.Phone.PhoneNumber("## #####-####"))
