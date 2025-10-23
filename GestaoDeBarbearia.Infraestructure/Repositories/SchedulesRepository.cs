@@ -17,18 +17,11 @@ public class SchedulesRepository : ISchedulesRepository
         this.dbFunctions = dbFunctions;
     }
 
-    public async Task Create(Appointment appointment, List<long> ServiceIds)
+    public async Task Create(Appointment appointment, List<Service> services)
     {
         await using NpgsqlConnection connection = await dbFunctions.CreateNewConnection();
 
         StringBuilder sql = new();
-
-        sql.Append("SELECT * FROM barber_shop_services WHERE id = ANY(@ServiceIds) AND isactive = TRUE");
-
-        var services = await connection.QueryAsync<Service>(sql.ToString(), new { ServiceIds });
-
-        if (services is null || !services.Any())
-            throw new NotFoundException("Os serviços selecionados não existem ou não estão disponíveis");
 
         // CALCULA O PREÇO TOTAL COM BASE NOS SERVIÇOS
         appointment.ServicePrice = services.Sum(s => s.Price);
@@ -47,11 +40,11 @@ public class SchedulesRepository : ISchedulesRepository
 
         sql.Append("INSERT INTO barber_shop_appointments_services (appointmentid, serviceid) VALUES ");
 
-        ServiceIds.ForEach(s =>
+        services.ForEach(s =>
         {
-            sql.Append($"({result.Id},{s})");
+            sql.Append($"({result.Id},{s.Id})");
 
-            if (s != ServiceIds.Last())
+            if (s != services.Last())
                 sql.Append(',');
         });
 
@@ -124,6 +117,15 @@ public class SchedulesRepository : ISchedulesRepository
         var appointmentStart = appointmentDateTime;
         var appointmentEnd = appointmentDateTime.AddMinutes(durationOfService);
 
+        /*
+         *  -> A DATA DO AGENDAMENTO EM SI DEVE SER MAIOR QUE QUALQUER DATA DE TÉRMINO 
+         *  DO SERVIÇO.
+         *  
+         *  -> A DATA DE TÉRMINO ESTIMADA DESSE AGENDAMENTO DEVE SER MENOR
+         *  QUE A DATA DE AGENDAMENTO DE QUALQUER OUTRO SERVIÇO
+         *  
+         */
+
         string sql = @"
         SELECT
             COUNT(*)
@@ -131,10 +133,14 @@ public class SchedulesRepository : ISchedulesRepository
             barber_shop_appointments
         WHERE
             employeeId = @EmployeeId
-            AND (
-                (appointmentdatetime BETWEEN @AppointmentStart AND @AppointmentEnd)
-                OR (appointmentdatetime < @AppointmentStart AND (appointmentdatetime + INTERVAL '30 minutes') > @AppointmentStart)
-            );";
+            AND appointmentenddatetime < @AppointmentStart AND appointmentdatetime > @AppointmentEnd ";
+
+        //WHERE
+        //   employeeId = @EmployeeId
+        //    AND(
+        //        (appointmentdatetime BETWEEN @AppointmentStart AND @AppointmentEnd)
+        //        OR(appointmentdatetime < @AppointmentStart AND(appointmentdatetime + INTERVAL '30 minutes') > @AppointmentStart)
+        //    ); ";
 
         var parameters = new
         {
@@ -148,7 +154,6 @@ public class SchedulesRepository : ISchedulesRepository
         var count = await connection.ExecuteScalarAsync<int>(sql, parameters);
 
         return count > 0;
-
     }
     public async Task Update(Appointment appointment)
     {

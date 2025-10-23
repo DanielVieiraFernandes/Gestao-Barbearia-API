@@ -1,4 +1,5 @@
-﻿using GestaoDeBarbearia.DbUp.Services;
+﻿using Dapper;
+using GestaoDeBarbearia.DbUp.Services;
 using GestaoDeBarbearia.DbUp.Utils;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
@@ -26,7 +27,7 @@ connection.Open();
 
 BarberShopDatabaseService barberShopDatabaseService = new(connection);
 
-while (op != 3)
+while (true)
 {
     Utils.ShowHeader();
 
@@ -36,6 +37,8 @@ while (op != 3)
     Console.WriteLine("2 - CRIAR TABELAS NO BANCO (INDIVIDUAL)");
     Console.ForegroundColor = ConsoleColor.DarkYellow;
     Console.WriteLine("3 - SELECIONAR TABELA PARA RODAR SEED");
+    Console.ForegroundColor = ConsoleColor.DarkRed;
+    Console.WriteLine("5 - SAIR DO GERENCIADOR");
     Console.ResetColor();
     Console.Write("\nEscolha uma opção: ");
 
@@ -44,11 +47,11 @@ while (op != 3)
         case "1":
             Console.Clear();
             await CreateTablesGeneral();
-            break;
+            continue;
         case "2":
             Console.Clear();
             await CreateTablesIndividual();
-            break;
+            continue;
         case "3":
             Console.Clear();
 
@@ -63,14 +66,30 @@ while (op != 3)
                 Console.WriteLine("| 4 - RODAR SEED DE DESPESAS     |");
                 Console.WriteLine("----------------------------------");
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("X 5 - RETORNAR AO MENU PRINCIPAL X");
+                Console.WriteLine("\nX 5 - RETORNAR AO MENU PRINCIPAL X\n");
                 Console.ResetColor();
+                Console.Write("Escolha uma opção: ");
 
                 switch (Console.ReadLine())
                 {
                     case "1":
                         {
                             Console.Clear();
+
+                            string sql = "SELECT COUNT(*) FROM barber_shop_employees";
+
+                            var count = await connection.ExecuteScalarAsync<int>(sql);
+
+                            if (count == 0)
+                            {
+                                Console.WriteLine(@"Nenhum funcionário encontrado. Inserindo registro inicial na tabela de funcionários para atender dependências de chave estrangeira...");
+                                await SeedService.RunSeedInEmployees(connection, 1);
+                                Utils.PauseAndClean();
+                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                Console.WriteLine("Continuando seed de agendamentos...");
+                                Console.ResetColor();
+                            }
+
                             Console.WriteLine("Quantos registros deseja inserir?");
                             bool isAInt = int.TryParse(Console.ReadLine(), out int numberOfRecords);
                             if (!isAInt || numberOfRecords < 1)
@@ -140,10 +159,9 @@ while (op != 3)
                 break;
             }
 
-            break;
+            continue;
 
         case "5":
-            op = 3;
             break;
         default:
             Console.ForegroundColor = ConsoleColor.Red;
@@ -153,6 +171,8 @@ while (op != 3)
 
             break;
     }
+
+    break;
 }
 
 async Task CreateTablesGeneral()

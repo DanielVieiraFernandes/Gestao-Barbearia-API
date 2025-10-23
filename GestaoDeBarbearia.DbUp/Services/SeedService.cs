@@ -19,6 +19,8 @@ internal class SeedService
 
             var fakerAppointment = new Faker<Appointment>("pt_BR")
              .RuleFor(a => a.AppointmentDateTime, f => f.Date.Soon(days: 30))
+             .RuleFor(a => a.AppointmentEndDateTime,
+    (f, a) => a.AppointmentDateTime.AddMinutes(f.Random.Int(30, 90)))
              .RuleFor(a => a.ClientId, f => null)
              .RuleFor(a => a.ClientName, f => f.Person.FullName)
              .RuleFor(a => a.ClientPhone, f => f.Phone.PhoneNumber("## #####-####"))
@@ -40,11 +42,11 @@ internal class SeedService
 
             sql = @"
             INSERT INTO barber_shop_appointments (
-              appointmentdatetime, clientId, clientname, clientphone, 
+              appointmentdatetime,appointmentenddatetime, clientId, clientname, clientphone, 
               employeeId, status, serviceprice, paymenttype, 
               paidat, createdat, observations
             ) VALUES (
-              @AppointmentDateTime, @ClientId, @ClientName, @ClientPhone, 
+              @AppointmentDateTime, @AppointmentEndDateTime, @ClientId, @ClientName, @ClientPhone, 
               @EmployeeId, @Status, @ServicePrice, @PaymentType, 
               @PaidAt, @CreatedAt, @Observations
             )";

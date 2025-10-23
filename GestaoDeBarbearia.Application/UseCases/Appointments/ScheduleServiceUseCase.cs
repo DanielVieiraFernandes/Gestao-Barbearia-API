@@ -33,6 +33,7 @@ public class ScheduleServiceUseCase
         Appointment appointment = new()
         {
             AppointmentDateTime = request.AppointmentDateTime,
+            AppointmentEndDateTime = request.AppointmentDateTime.AddMinutes(durationOfService),
             ClientId = request.ClientId,
             ClientName = request.ClientName,
             ClientPhone = request.ClientPhone,
@@ -40,7 +41,7 @@ public class ScheduleServiceUseCase
             PaymentType = request.PaymentType
         };
 
-        await scheduleRepository.Create(appointment, request.ServiceIds);
+        await scheduleRepository.Create(appointment, services);
 
         return new ResponseScheduledServiceJson
         {

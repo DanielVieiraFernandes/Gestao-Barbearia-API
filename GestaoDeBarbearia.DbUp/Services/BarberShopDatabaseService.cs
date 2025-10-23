@@ -175,6 +175,7 @@ internal class BarberShopDatabaseService
             sql.Append("CREATE TABLE barber_shop_appointments (");
             sql.Append("id BIGSERIAL PRIMARY KEY, ");
             sql.Append("appointmentdatetime TIMESTAMP WITHOUT TIME ZONE NOT NULL, ");
+            sql.Append("appointmentenddatetime TIMESTAMP WITHOUT TIME ZONE NOT NULL, ");
             sql.Append("clientId BIGINT NULL DEFAULT NULL, ");
             sql.Append("clientname VARCHAR(200) NULL DEFAULT NULL, ");
             sql.Append("clientphone VARCHAR(15) NULL DEFAULT NULL, ");

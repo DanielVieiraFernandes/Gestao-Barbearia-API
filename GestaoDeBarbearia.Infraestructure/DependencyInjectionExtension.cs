@@ -17,5 +17,6 @@ public static class DependencyInjectionExtension
         services.AddScoped<ISalesRepository, SalesRepository>();
         services.AddScoped<IImpostosRepository, ImpostosRepository>();
         services.AddScoped<IExpensesRepository, ExpensesRepository>();
+        services.AddScoped<IServicesRepository, ServicesRepository>();
     }
 }
