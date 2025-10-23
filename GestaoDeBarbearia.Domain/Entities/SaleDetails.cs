@@ -5,5 +5,5 @@ public class SaleDetails
     public long SaleId { get; set; }
     public long ProductId { get; set; }
     public long Quantity { get; set; }
-    public long UnitSalePrice { get; set; }
+    public decimal UnitSalePrice { get; set; }
 }

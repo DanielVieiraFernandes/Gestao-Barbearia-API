@@ -119,10 +119,10 @@ public class SchedulesRepository : ISchedulesRepository
         return await connection.QuerySingleOrDefaultAsync<Appointment>(sql.ToString(), new { id });
     }
 
-    public async Task<bool> IsTimeSlotOccupied(DateTime appointmentDateTime, long employeeId)
+    public async Task<bool> IsTimeSlotOccupied(DateTime appointmentDateTime, int durationOfService, long employeeId)
     {
         var appointmentStart = appointmentDateTime;
-        var appointmentEnd = appointmentDateTime.AddMinutes(30);
+        var appointmentEnd = appointmentDateTime.AddMinutes(durationOfService);
 
         string sql = @"
         SELECT
@@ -132,7 +132,7 @@ public class SchedulesRepository : ISchedulesRepository
         WHERE
             employeeId = @EmployeeId
             AND (
-                (appointmentdatetime >= @AppointmentStart AND appointmentdatetime < @AppointmentEnd)
+                (appointmentdatetime BETWEEN @AppointmentStart AND @AppointmentEnd)
                 OR (appointmentdatetime < @AppointmentStart AND (appointmentdatetime + INTERVAL '30 minutes') > @AppointmentStart)
             );";
 

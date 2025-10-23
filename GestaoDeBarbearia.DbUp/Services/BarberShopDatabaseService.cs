@@ -180,7 +180,7 @@ internal class BarberShopDatabaseService
             sql.Append("clientphone VARCHAR(15) NULL DEFAULT NULL, ");
             sql.Append("employeeId BIGINT NOT NULL, ");
             sql.Append("status INT NOT NULL DEFAULT 1, ");
-            sql.Append("serviceprice BIGINT NOT NULL, ");
+            sql.Append("serviceprice NUMERIC(15,2) NOT NULL, ");
             sql.Append("paymenttype INT NOT NULL, ");
             sql.Append("paidat TIMESTAMP WITHOUT TIME ZONE NULL DEFAULT NULL, ");
             sql.Append("createdat TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(), ");
@@ -260,7 +260,7 @@ internal class BarberShopDatabaseService
             sql.Append("telephone VARCHAR(15) UNIQUE NOT NULL, ");
             sql.Append("email VARCHAR(255) UNIQUE NOT NULL, ");
             sql.Append("password VARCHAR(255) NOT NULL, ");
-            sql.Append("salary BIGINT NOT NULL, ");
+            sql.Append("salary NUMERIC(15,2) NOT NULL, ");
             sql.Append("position INT NOT NULL, ");
             sql.Append("createdat TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(), ");
             sql.Append("updatedat TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() ");
@@ -296,8 +296,8 @@ internal class BarberShopDatabaseService
             sql.Append("CREATE TABLE barber_shop_products ( ");
             sql.Append("id BIGSERIAL PRIMARY KEY, ");
             sql.Append("name VARCHAR(255) NOT NULL, ");
-            sql.Append("saleprice BIGINT NOT NULL, ");
-            sql.Append("unitcost BIGINT NOT NULL, ");
+            sql.Append("saleprice NUMERIC(15,2) NOT NULL, ");
+            sql.Append("unitcost NUMERIC(15,2) NOT NULL, ");
             sql.Append("quantity BIGINT NOT NULL, ");
             sql.Append("minimumstock INT NOT NULL, ");
             sql.Append("createdat TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(), ");
@@ -334,7 +334,7 @@ internal class BarberShopDatabaseService
             sql.Append("CREATE TABLE barber_shop_sales ( ");
             sql.Append("id BIGSERIAL PRIMARY KEY, ");
             sql.Append("saledate TIMESTAMP WITHOUT TIME ZONE NOT NULL, ");
-            sql.Append("saletotal BIGINT NOT NULL, ");
+            sql.Append("saletotal NUMERIC(15,2) NOT NULL, ");
             sql.Append("updatedat TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() ");
             sql.Append("); ");
 
@@ -370,7 +370,7 @@ internal class BarberShopDatabaseService
             sql.Append("saleid BIGINT NOT NULL, ");
             sql.Append("productid BIGINT NOT NULL, ");
             sql.Append("quantity BIGINT NOT NULL, ");
-            sql.Append("unitsaleprice BIGINT NOT NULL, ");
+            sql.Append("unitsaleprice NUMERIC(15,2) NOT NULL, ");
             sql.Append("CONSTRAINT fk_sale_details_sales FOREIGN KEY (saleid) REFERENCES barber_shop_sales (id) ON UPDATE CASCADE, ");
             sql.Append("CONSTRAINT fk_sale_details_products FOREIGN KEY (productid) REFERENCES barber_shop_products (id) ON UPDATE CASCADE ");
             sql.Append("); ");

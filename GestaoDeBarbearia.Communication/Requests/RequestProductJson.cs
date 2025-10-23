@@ -8,10 +8,12 @@ public class RequestProductJson
     public string Name { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "O preço do produto é obrigatório")]
-    public long SalePrice { get; set; }
+    [Range(0.1, (double)decimal.MaxValue, ErrorMessage = "Preço inválido! o preço deve ser maior que zero e não passar de 15 dígitos")]
+    public decimal SalePrice { get; set; }
 
     [Required(ErrorMessage = "O custo do produto é obrigatório")]
-    public long UnitCost { get; set; }
+    [Range(0.1, (double)decimal.MaxValue, ErrorMessage = "Custo inválido! o custo deve ser maior que zero e não passar de 15 dígitos")]
+    public decimal UnitCost { get; set; }
 
     [Required(ErrorMessage = "A quantidade do produto é obrigatória")]
     public long Quantity { get; set; }

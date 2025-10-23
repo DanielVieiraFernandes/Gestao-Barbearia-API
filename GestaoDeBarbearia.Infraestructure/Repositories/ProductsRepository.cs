@@ -56,8 +56,6 @@ public class ProductsRepository : IProductsRepository
 
         // Equivalente a result.ToList()
         return [.. result];
-
-        
     }
 
     public async Task Update(Product product)

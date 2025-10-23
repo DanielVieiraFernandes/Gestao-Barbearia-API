@@ -136,7 +136,7 @@ internal class SeedService
             .RuleFor(p => p.Id, f => f.IndexFaker + 1)
             .RuleFor(p => p.Name, f => f.Commerce.ProductName())
             .RuleFor(p => p.SalePrice, f => f.Random.Long(min: 500, max: 50000))
-            .RuleFor(p => p.UnitCost, (f, p) => f.Random.Long(min: 200, max: p.SalePrice))
+            .RuleFor(p => p.UnitCost, (f, p) => f.Random.Decimal(min: 200, max: p.SalePrice))
             .RuleFor(p => p.Quantity, f => f.Random.Long(min: 0, max: 200))
             .RuleFor(p => p.MinimumStock, f => f.Random.Int(min: 1, max: 20))
             .RuleFor(p => p.CreatedAt, f => f.Date.Past(2))
