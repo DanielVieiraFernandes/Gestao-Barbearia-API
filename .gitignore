@@ -6,6 +6,9 @@
 api/
 docs/
 _site/
+docfx.json
+index.md
+toc.yml
 
 # User-specific files
 *.rsuser
