@@ -49,7 +49,7 @@ internal class BarberShopDatabaseService
             sql.Append("id SERIAL PRIMARY KEY, ");
             sql.Append("name VARCHAR(100) NOT NULL, ");
             sql.Append("description VARCHAR(255) NOT NULL, ");
-            sql.Append("price BIGINT NOT NULL, ");
+            sql.Append("price NUMERIC(15,2) NOT NULL, ");
             sql.Append("durationminutes INT NOT NULL, ");
             sql.Append("isactive BOOLEAN DEFAULT TRUE");
             sql.Append("); ");

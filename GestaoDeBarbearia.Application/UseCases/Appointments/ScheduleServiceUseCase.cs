@@ -1,6 +1,7 @@
 ﻿using GestaoDeBarbearia.Communication.Requests;
 using GestaoDeBarbearia.Communication.Responses;
 using GestaoDeBarbearia.Domain.Entities;
+using GestaoDeBarbearia.Domain.Enums;
 using GestaoDeBarbearia.Domain.Repositories;
 using GestaoDeBarbearia.Exception.ExceptionsBase;
 
@@ -38,7 +39,8 @@ public class ScheduleServiceUseCase
             ClientName = request.ClientName,
             ClientPhone = request.ClientPhone,
             EmployeeId = request.EmployeeId,
-            PaymentType = request.PaymentType
+            PaymentType = request.PaymentType,
+            Status = AppointmentStatus.Pending
         };
 
         await scheduleRepository.Create(appointment, services);
