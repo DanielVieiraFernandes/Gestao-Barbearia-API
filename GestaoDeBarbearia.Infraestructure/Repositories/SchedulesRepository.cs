@@ -123,7 +123,7 @@ public class SchedulesRepository : ISchedulesRepository
          *  
          *  -> A DATA DE TÉRMINO ESTIMADA DESSE AGENDAMENTO DEVE SER MENOR
          *  QUE A DATA DE AGENDAMENTO DE QUALQUER OUTRO SERVIÇO
-         *  
+         * 
          */
 
         string sql = @"
@@ -133,14 +133,7 @@ public class SchedulesRepository : ISchedulesRepository
             barber_shop_appointments
         WHERE
             employeeId = @EmployeeId
-            AND appointmentenddatetime < @AppointmentStart AND appointmentdatetime > @AppointmentEnd ";
-
-        //WHERE
-        //   employeeId = @EmployeeId
-        //    AND(
-        //        (appointmentdatetime BETWEEN @AppointmentStart AND @AppointmentEnd)
-        //        OR(appointmentdatetime < @AppointmentStart AND(appointmentdatetime + INTERVAL '30 minutes') > @AppointmentStart)
-        //    ); ";
+            AND appointmentenddatetime > @AppointmentStart AND appointmentdatetime < @AppointmentEnd ";
 
         var parameters = new
         {
@@ -148,7 +141,6 @@ public class SchedulesRepository : ISchedulesRepository
             AppointmentStart = appointmentStart,
             AppointmentEnd = appointmentEnd
         };
-
 
         await using NpgsqlConnection connection = await dbFunctions.CreateNewConnection();
         var count = await connection.ExecuteScalarAsync<int>(sql, parameters);
