@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using GestaoDeBarbearia.Domain.Entities;
+using GestaoDeBarbearia.Domain.Enums;
 using GestaoDeBarbearia.Domain.Pagination.Sales;
 using GestaoDeBarbearia.Domain.Repositories;
 using GestaoDeBarbearia.Exception.ExceptionsBase;
@@ -16,7 +17,7 @@ public class SalesRepository : ISalesRepository
         this.dbFunctions = dbFunctions;
         this.productsRepository = productsRepository;
     }
-    public async Task<(Sale, List<SaleDetails>)> Create(Sale sale, List<SaleDetails> saleDetails)
+    public async Task<Sale> Create(Sale sale, List<SaleDetails> saleDetails)
     {
         await using var connection = await dbFunctions.CreateNewConnection();
 
@@ -48,7 +49,7 @@ public class SalesRepository : ISalesRepository
 
         StringBuilder sql = new();
 
-        sql.Append(DBFunctions.CreateInsertQuery<Sale>("barber_shop_sales"));
+        sql.Append(DBFunctions.CreateInsertQuery<Sale>("barber_shop_sales", ["id", "createdat", "updatedat", "details"]));
         sql.Append(" RETURNING *; ");
 
         var createdSale = await connection.QuerySingleAsync<Sale>(sql.ToString(), sale);
@@ -94,7 +95,9 @@ public class SalesRepository : ISalesRepository
 
         await transaction.CommitAsync();
 
-        return (createdSale, [.. createdSaleDetails]);
+        createdSale.Details = createdSaleDetails.ToList();
+
+        return createdSale;
     }
 
     public async Task<List<Sale>> FilterSaleAndDetailsByMonth(DateOnly month)
@@ -159,8 +162,36 @@ public class SalesRepository : ISalesRepository
         return [.. saleDetails];
     }
 
-    public Task<List<Sale>> GetAll(RequestSalesPaginationParamsJson? paginationParams = null)
+    public async Task<List<Sale>> GetAll(RequestSalesPaginationParamsJson? paginationParams = null)
     {
-        throw new NotImplementedException();
+        await using var connection = await dbFunctions.CreateNewConnection();
+
+        StringBuilder sql = new();
+
+        sql.Append("SELECT s.*, sd.* FROM barber_shop_sales s ");
+        sql.Append("INNER JOIN barber_shop_sale_details sd ON s.id = sd.saleid ");
+
+        if (paginationParams != null)
+        {
+            sql.Append($"ORDER BY s.{paginationParams.OrderByColumn.ToString().ToLower()} ");
+            sql.Append($"{paginationParams.OrderByDirection.GetEnumDescription()} ");
+        }
+
+        Dictionary<long, Sale> salesDictionary = [];
+
+        await connection.QueryAsync<Sale, SaleDetails, Sale>(sql.ToString(), (sale, saledetails) =>
+        {
+            if (!salesDictionary.TryGetValue(sale.Id, out var newSale))
+            {
+                newSale = sale;
+                salesDictionary.Add(newSale.Id, newSale);
+            }
+
+            newSale.Details.Add(saledetails);
+
+            return sale;
+        }, splitOn: "id");
+
+        return [.. salesDictionary.Values];
     }
 }

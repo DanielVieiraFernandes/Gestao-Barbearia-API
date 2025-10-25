@@ -4,5 +4,4 @@ namespace GestaoDeBarbearia.Communication.Responses;
 public class ResponseSaleJson
 {
     public Sale sale { get; set; } = default!;
-    public List<SaleDetails> saleDetails { get; set; } = default!;
 }

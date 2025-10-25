@@ -4,7 +4,7 @@ using GestaoDeBarbearia.Domain.Pagination.Sales;
 namespace GestaoDeBarbearia.Domain.Repositories;
 public interface ISalesRepository
 {
-    Task<(Sale, List<SaleDetails>)> Create(Sale sale, List<SaleDetails> saleDetails);
+    Task<Sale> Create(Sale sale, List<SaleDetails> saleDetails);
     Task<Sale> FindById(long id);
     Task<List<SaleDetails>> FindDetailsById(long saleId);
     Task<List<Sale>> FilterSaleAndDetailsByMonth(DateOnly month);
