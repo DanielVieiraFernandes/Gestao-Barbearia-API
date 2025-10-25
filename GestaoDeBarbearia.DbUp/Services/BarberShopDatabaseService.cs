@@ -529,4 +529,48 @@ internal class BarberShopDatabaseService
             LogErro(ex);
         }
     }
+
+    public async Task CreateBarberShopSystemParametersTable()
+    {
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("Criando tabela de parâmetros do sistema e período de funcionamento...");
+        Console.ResetColor();
+        try
+        {
+            StringBuilder sql = new();
+
+            sql.Append("DROP TABLE IF EXISTS barber_shop_system_parameters CASCADE; ");
+
+            await connection.ExecuteAsync(sql.ToString());
+
+            sql.Clear();
+
+            sql.Append("CREATE TABLE barber_shop_system_parameters ( ");
+            sql.Append("lunchtimestart TIME WITHOUT TIME ZONE, ");
+            sql.Append("lunchtimeend TIME WITHOUT TIME ZONE, ");
+            sql.Append("adminpassword VARCHAR(255) NOT NULL, ");
+            sql.Append("autoconfirmappointments BOOLEAN NOT NULL DEFAULT FALSE ");
+            sql.Append("); ");
+
+            await connection.ExecuteAsync(sql.ToString());
+
+            sql.Clear();
+
+            sql.Append("CREATE TABLE barber_shop_operating_period ( ");
+            sql.Append("dayweek INT NOT NULL, ");
+            sql.Append("openinghour TIME WITHOUT TIME ZONE NOT NULL, ");
+            sql.Append("closinghour TIME WITHOUT TIME ZONE NOT NULL ");
+            sql.Append(");");
+
+            await connection.ExecuteAsync(sql.ToString());
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Tabela de parâmetros do sistema e período de funcionamento criadas com sucesso!");
+            Console.ResetColor();
+        }
+        catch (Exception ex)
+        {
+            LogErro(ex);
+        }
+    }
 }

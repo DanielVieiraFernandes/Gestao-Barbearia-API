@@ -187,6 +187,7 @@ async Task CreateTablesGeneral()
     await barberShopDatabaseService.CreateBarberShopSaleDetailsTable();
     await barberShopDatabaseService.CreateBarberShopImpostosTable();
     await barberShopDatabaseService.CreateBarberShopExpensesTable();
+    await barberShopDatabaseService.CreateBarberShopSystemParametersTable();
 
     Console.ForegroundColor = ConsoleColor.DarkGreen;
     Console.WriteLine("\nTabelas no banco criadas com sucesso!");
@@ -202,7 +203,7 @@ async Task CreateTablesIndividual()
         Utils.ShowHeader();
 
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine("-> 11 - RETORNAR AO MENU PRINCIPAL\n");
+        Console.WriteLine("-> 12 - RETORNAR AO MENU PRINCIPAL\n");
         Console.ResetColor();
 
         Console.ForegroundColor = ConsoleColor.Magenta;
@@ -217,6 +218,7 @@ async Task CreateTablesIndividual()
         Console.WriteLine("| 8  <-> CRIAR TABELA INTERMEDIÁRIA (services_appointments) |");
         Console.WriteLine("| 9  <-> CRIAR TABELA INTERMEDIÁRIA (sale_details)          |");
         Console.WriteLine("| 10 <-> CRIAR TABELA DE IMPOSTOS (SIMPLES NACIONAL)        |");
+        Console.WriteLine("| 11 <-> CRIAR TABELA DE PARÂMETROS DO SISTEMA E AUXILIARES |");
         Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\n");
         Console.ResetColor();
 
@@ -284,6 +286,11 @@ async Task CreateTablesIndividual()
                 Utils.PauseAndClean();
                 break;
             case "11":
+                Console.Clear();
+                await barberShopDatabaseService.CreateBarberShopSystemParametersTable();
+                Utils.PauseAndClean();
+                break;
+            case "12":
                 op = 5;
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("Retornando ao menu base...");
