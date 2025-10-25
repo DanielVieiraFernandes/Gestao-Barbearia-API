@@ -62,7 +62,7 @@ public class RegisterExpenseUseCase
             Supplier = request.Supplier ?? "",
         };
 
-        _ = expense.PaidAmount == expense.Amount ? expense.Status = Domain.Enums.ExpenseStatus.Paid : Domain.Enums.ExpenseStatus.Pending;
+        expense.Status = expense.PaidAmount == expense.Amount ? Domain.Enums.ExpenseStatus.Paid : Domain.Enums.ExpenseStatus.Pending;
 
         // Verifica se a data atual é maior que a data de vencimento e marca como pagamento atrasado
         if (expense.DueDate < DateTime.Now && expense.Status == Domain.Enums.ExpenseStatus.Pending)

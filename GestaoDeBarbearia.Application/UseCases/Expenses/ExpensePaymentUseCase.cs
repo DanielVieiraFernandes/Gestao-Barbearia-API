@@ -27,14 +27,15 @@ public class ExpensePaymentUseCase
 
         decimal amountAfterPayment;
 
+
         if (expense.Recurrence == Recurrence.Installments)
         {
             // Como aqui eu tenho certeza de que existirá um valor para o campo de valor da parcela
             // Faço um CAST indicando que tenho certeza de que não será nulo
             amountAfterPayment = (decimal)expense.AmountOfInstallment! - request.Amount;
 
-            if (amountAfterPayment < 0)
-                throw new InvalidAmountForPayment("Valor inválido para pagamento");
+            if (amountAfterPayment != 0)
+                throw new InvalidAmountForPayment("Valor inválido para o pagamento da parcela ");
 
             expense.PaidAmount += request.Amount;
 
