@@ -3,6 +3,8 @@
 namespace GestaoDeBarbearia.Domain.Entities;
 public class Appointment
 {
+    // Campos referentes à tabela barber_shop_appointments
+
     public long Id { get; set; }
     public DateTime AppointmentDateTime { get; set; }
     public DateTime AppointmentEndDateTime { get; set; }
@@ -17,4 +19,9 @@ public class Appointment
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public string Observations { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Apenas para consultas com JOIN
+    /// </summary>
+    public List<Service> Services { get; set; } = [];
 }

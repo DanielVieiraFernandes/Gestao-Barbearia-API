@@ -6,6 +6,7 @@ using GestaoDeBarbearia.Domain.Repositories;
 using GestaoDeBarbearia.Exception.ExceptionsBase;
 using GestaoDeBarbearia.Infraestructure.Utils;
 using Npgsql;
+using System.Reflection;
 using System.Text;
 
 namespace GestaoDeBarbearia.Infraestructure.Repositories;
@@ -84,22 +85,53 @@ public class SchedulesRepository : ISchedulesRepository
 
         DynamicParameters parameters = new();
 
-        sql.Append("SELECT * FROM barber_shop_appointments WHERE id <> 0 ");
+        PropertyInfo[] props = typeof(Appointment).GetProperties();
+
+        List<string> appointmentColumns = props.Where(p => !p.Name.Equals("services", StringComparison.CurrentCultureIgnoreCase)).Select(p => "ap." + p.Name.ToLower()).ToList();
+
+        props = typeof(Service).GetProperties();
+
+        List<string> serviceColumns = props.Select(p => "s." + p.Name.ToLower()).ToList();
+
+        sql.Append($"SELECT {string.Join(',', appointmentColumns)}, {string.Join(',', serviceColumns)} ");
+        sql.Append($"FROM barber_shop_appointments AS ap INNER JOIN barber_shop_appointments_services AS aps ");
+        sql.Append("ON ap.id = aps.appointmentid ");
+        sql.Append("INNER JOIN barber_shop_services AS s ON aps.serviceid = s.id ");
+        sql.Append("WHERE ap.id <> 0 ");
 
         if (pagination.Status is not null)
         {
-            sql.Append("AND status = @Status ");
+            sql.Append("AND ap.status = @Status ");
             parameters.Add("Status", pagination.Status);
         }
 
-        sql.Append($"ORDER BY {pagination.OrderByColumn.ToString().ToLower()} {pagination.OrderByDirection.GetEnumDescription()} ");
+        sql.Append($"ORDER BY ap.{pagination.OrderByColumn.ToString().ToLower()} {pagination.OrderByDirection.GetEnumDescription()} ");
 
-        var result = await connection.QueryAsync<Appointment>(sql.ToString(), parameters);
+        Dictionary<long, Appointment> appointmentsDictionary = [];
+
+        var result = await connection.QueryAsync<Appointment, Service, Appointment>(sql.ToString(), (appointment, service) =>
+        {
+            // Caso haja mais de um serviço para o mesmo agendamento
+            // é necessário agrupar os serviços dentro do agendamento
+            // para evitar duplicidade de agendamentos na lista final
+            // Ex: Agendamento 1 -> Serviço A, Serviço B
+
+            if (!appointmentsDictionary.TryGetValue(appointment.Id, out var currentAppointment))
+            {
+                currentAppointment = appointment;
+                currentAppointment.Services = [];
+                appointmentsDictionary.Add(currentAppointment.Id, currentAppointment);
+            }
+
+            currentAppointment.Services.Add(service);
+
+            return currentAppointment;
+        }, splitOn: "id");
 
         if (result is null)
             return [];
 
-        return [.. result];
+        return [.. appointmentsDictionary.Values];
     }
 
 
