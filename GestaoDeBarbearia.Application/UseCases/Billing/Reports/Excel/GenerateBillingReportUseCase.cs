@@ -68,16 +68,12 @@ public class GenerateBillingReportUseCase
             // Impostos sobre Serviços
             relatorioSheet.Cell("A4").Value = "Impostos sobre Serviços";
             relatorioSheet.Cell("B4").Value = salesTaxesValue;
-            relatorioSheet.Cell("D4").Value = impostoService.Aliquota;
             relatorioSheet.Cell("B4").Style.NumberFormat.Format = "\"R$\" #,##0.00";
-            relatorioSheet.Cell("D4").Style.NumberFormat.Format = "0.00%";
 
             // Impostos sobre Vendas
             relatorioSheet.Cell("A5").Value = "Impostos sobre Vendas";
             relatorioSheet.Cell("C5").Value = serviceTaxesValue;
-            relatorioSheet.Cell("D5").Value = impostoProduct.Aliquota;
             relatorioSheet.Cell("C5").Style.NumberFormat.Format = "\"R$\" #,##0.00";
-            relatorioSheet.Cell("D5").Style.NumberFormat.Format = "0.00%";
 
             // Valor das Despesas
             relatorioSheet.Cell("A7").Value = "Despesas Totais";
