@@ -25,6 +25,7 @@ public static class DependecyInjectionExtension
 
         // Casos de uso de vendas
         services.AddScoped<RegisterSaleUseCase>();
+        services.AddScoped<FetchSalesUseCase>();
 
         // Casos de uso de relatório
         services.AddScoped<GenerateBillingReportUseCase>();
