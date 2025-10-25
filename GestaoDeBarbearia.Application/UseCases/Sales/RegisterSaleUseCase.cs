@@ -33,8 +33,7 @@ public class RegisterSaleUseCase
 
         return new ResponseSaleJson
         {
-            sale = result.Item1,
-            saleDetails = result.Item2
+            sale = result,
         };
     }
 }
