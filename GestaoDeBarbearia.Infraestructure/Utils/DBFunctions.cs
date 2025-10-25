@@ -18,39 +18,37 @@ public class DBFunctions
         return connection;
     }
 
-    public static string CreateInsertQuery<T>(string tableName)
+    public static string CreateInsertQuery<T>(string tableName, List<string>? excludeProps = null)
     {
         Type type = typeof(T);
         PropertyInfo[] props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-        List<string> columns = [];
-        List<string> parameters = [];
+        Dictionary<string, string> columnsAndParams = [];
 
         // Propriedades a serem excluídas da query
-        List<string> excludeProps = ["Id", "CreatedAt", "UpdatedAt"];
+        excludeProps ??= ["id", "createdat", "updatedat"];
 
         foreach (var prop in props)
         {
             // Ignorar propriedades que estão na lista de exclusão
-            if (excludeProps.Contains(prop.Name))
+            if (excludeProps.Contains(prop.Name.ToLower()))
                 continue;
 
-            columns.Add(prop.Name.ToLower());
-            parameters.Add($"@{prop.Name}");
+            columnsAndParams.Add(prop.Name.ToLower(), $"@{prop.Name}");
         }
 
-        string insertSQL = $"INSERT INTO {tableName} ({string.Join(", ", columns)}) VALUES ({string.Join(", ", parameters)})";
+        string insertSQL = $"INSERT INTO {tableName} ({string.Join(", ", columnsAndParams.Keys)}) VALUES ({string.Join(", ", columnsAndParams.Values)})";
 
         return insertSQL;
     }
 
-    public static string CreateUpdateQuery<T>(string tableName)
+    public static string CreateUpdateQuery<T>(string tableName, List<string>? excludeProps = null)
     {
         Type type = typeof(T);
         PropertyInfo[] props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
         List<string> setClauses = [];
         // Propriedades a serem excluídas da query
-        List<string> excludeProps = ["Id", "CreatedAt", "UpdatedAt"];
+        excludeProps ??= ["id", "createdat"];
         foreach (var prop in props)
         {
             // Ignorar propriedades que estão na lista de exclusão
