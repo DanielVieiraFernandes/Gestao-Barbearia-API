@@ -540,6 +540,7 @@ internal class BarberShopDatabaseService
             StringBuilder sql = new();
 
             sql.Append("DROP TABLE IF EXISTS barber_shop_system_parameters CASCADE; ");
+            sql.Append("DROP TABLE IF EXISTS barber_shop_operating_period CASCADE; ");
 
             await connection.ExecuteAsync(sql.ToString());
 

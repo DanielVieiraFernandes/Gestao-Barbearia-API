@@ -38,20 +38,47 @@ internal class SeedService
 
             sql = "TRUNCATE TABLE barber_shop_appointments RESTART IDENTITY CASCADE;";
 
-            await connection.ExecuteAsync(sql.ToString());
+            await connection.ExecuteAsync(sql);
 
-            sql = @"
-            INSERT INTO barber_shop_appointments (
-              appointmentdatetime,appointmentenddatetime, clientId, clientname, clientphone, 
-              employeeId, status, serviceprice, paymenttype, 
-              paidat, createdat, observations
-            ) VALUES (
-              @AppointmentDateTime, @AppointmentEndDateTime, @ClientId, @ClientName, @ClientPhone, 
-              @EmployeeId, @Status, @ServicePrice, @PaymentType, 
-              @PaidAt, @CreatedAt, @Observations
-            )";
+            sql = @"SELECT * FROM barber_shop_services";
 
-            await connection.ExecuteAsync(sql, appointments);
+            var services = await connection.QueryAsync<Service>(sql);
+
+            if (services is null || !services.Any())
+                throw new Exception("Não há registros na tabela de serviços");
+
+            foreach (var appointment in appointments)
+            {
+                sql = @"
+                INSERT INTO barber_shop_appointments (
+                  appointmentdatetime,appointmentenddatetime, clientId, clientname, clientphone, 
+                  employeeId, status, serviceprice, paymenttype, 
+                  paidat, createdat, observations
+                ) VALUES (
+                  @AppointmentDateTime, @AppointmentEndDateTime, @ClientId, @ClientName, @ClientPhone, 
+                  @EmployeeId, @Status, @ServicePrice, @PaymentType, 
+                  @PaidAt, @CreatedAt, @Observations
+                ) RETURNING *";
+
+                var createdAppointment = await connection.QueryFirstAsync<Appointment>(sql, appointment);
+
+                if (createdAppointment is null)
+                    throw new Exception("Erro ao criar agendamento");
+
+                sql = @"INSERT INTO barber_shop_appointments_services (
+                        appointmentid,
+                        serviceid
+                    ) VALUES (
+                        @AppointmentId,
+                        @ServiceId
+                    );";
+
+                await connection.ExecuteAsync(sql, new
+                {
+                    AppointmentId = createdAppointment.Id,
+                    ServiceId = services.ElementAt(new Random().Next(services.Count())).Id
+                });
+            }
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("seed de agendamentos executado com sucesso!");
