@@ -9,7 +9,7 @@ public static class DependencyInjectionExtension
     public static void AddInfra(this IServiceCollection services)
     {
         // DBFunctions é uma classe que contém métodos úteis para manipulação do banco de dados
-        services.AddScoped<DBFunctions>();
+        services.AddScoped<DatabaseQueryBuilder>();
 
         // Injeção de dependência dos repositórios
         services.AddScoped<ISchedulesRepository, SchedulesRepository>();

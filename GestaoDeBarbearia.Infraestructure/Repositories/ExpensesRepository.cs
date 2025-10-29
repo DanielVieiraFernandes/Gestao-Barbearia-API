@@ -9,9 +9,9 @@ using System.Text;
 namespace GestaoDeBarbearia.Infraestructure.Repositories;
 public class ExpensesRepository : IExpensesRepository
 {
-    private readonly DBFunctions dbFunctions;
+    private readonly DatabaseQueryBuilder dbFunctions;
     private const string TABLE_NAME = "barber_shop_expenses";
-    public ExpensesRepository(DBFunctions dbFunctions)
+    public ExpensesRepository(DatabaseQueryBuilder dbFunctions)
     {
         this.dbFunctions = dbFunctions;
     }
@@ -20,7 +20,7 @@ public class ExpensesRepository : IExpensesRepository
     {
         await using var connection = await dbFunctions.CreateNewConnection();
 
-        string sql = DBFunctions.CreateInsertQuery<Expense>(TABLE_NAME);
+        string sql = DatabaseQueryBuilder.CreateInsertQuery<Expense>(TABLE_NAME);
 
         var result = await connection.QueryFirstAsync<Expense>(sql + " RETURNING *", expense);
 
@@ -34,7 +34,7 @@ public class ExpensesRepository : IExpensesRepository
     {
         await using var connection = await dbFunctions.CreateNewConnection();
 
-        string sql = DBFunctions.CreateSelectByIdQuery(TABLE_NAME);
+        string sql = DatabaseQueryBuilder.CreateSelectByIdQuery(TABLE_NAME);
 
         var result = await connection.QueryFirstOrDefaultAsync<Expense>(sql, new { Id = id });
 
@@ -47,7 +47,7 @@ public class ExpensesRepository : IExpensesRepository
 
         StringBuilder sql = new();
 
-        sql.Append("SELECT * FROM barber_shop_expenses ");
+        sql.Append($"SELECT * FROM {TABLE_NAME} ");
 
         if (pagination != null)
         {
@@ -70,7 +70,7 @@ public class ExpensesRepository : IExpensesRepository
     {
         await using var connection = await dbFunctions.CreateNewConnection();
 
-        string sql = DBFunctions.CreateUpdateQuery<Expense>(TABLE_NAME);
+        string sql = DatabaseQueryBuilder.CreateUpdateQuery<Expense>(TABLE_NAME);
 
         var result = await connection.QueryFirstAsync<Expense>(sql + " RETURNING *", expense);
 
@@ -86,7 +86,7 @@ public class ExpensesRepository : IExpensesRepository
 
         DynamicParameters parameters = new();
 
-        string sql = @$"SELECT SUM(amount) FROM barber_shop_expenses WHERE 
+        string sql = @$"SELECT SUM(amount) FROM {TABLE_NAME} WHERE 
         (paymentdate BETWEEN @StartDate AND @EndDate) AND status = @Status";
 
         parameters.Add("StartDate", startDate);

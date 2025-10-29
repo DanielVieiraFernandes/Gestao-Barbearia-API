@@ -12,15 +12,15 @@ using System.Text;
 namespace GestaoDeBarbearia.Infraestructure.Repositories;
 public class SchedulesRepository : ISchedulesRepository
 {
-    private DBFunctions dbFunctions;
-    public SchedulesRepository(DBFunctions dbFunctions)
+    private DatabaseQueryBuilder databaseQueryBuilder;
+    public SchedulesRepository(DatabaseQueryBuilder dbFunctions)
     {
-        this.dbFunctions = dbFunctions;
+        this.databaseQueryBuilder = dbFunctions;
     }
 
     public async Task Create(Appointment appointment, List<Service> services)
     {
-        await using NpgsqlConnection connection = await dbFunctions.CreateNewConnection();
+        await using NpgsqlConnection connection = await databaseQueryBuilder.CreateNewConnection();
 
         StringBuilder sql = new();
 
@@ -29,7 +29,7 @@ public class SchedulesRepository : ISchedulesRepository
 
         sql.Clear();
 
-        sql.Append(DBFunctions.CreateInsertQuery<Appointment>("barber_shop_appointments"));
+        sql.Append(DatabaseQueryBuilder.CreateInsertQuery<Appointment>("barber_shop_appointments"));
         sql.Append(" RETURNING *");
 
         var result = await connection.QuerySingleOrDefaultAsync<Appointment>(sql.ToString(), appointment);
@@ -54,7 +54,7 @@ public class SchedulesRepository : ISchedulesRepository
 
     public async Task<List<Appointment>> FilterByMonth(DateOnly month)
     {
-        await using var connection = await dbFunctions.CreateNewConnection();
+        await using var connection = await databaseQueryBuilder.CreateNewConnection();
 
         StringBuilder sql = new();
 
@@ -79,7 +79,7 @@ public class SchedulesRepository : ISchedulesRepository
 
     public async Task<List<Appointment>> FindAll(RequestAppointmentsPaginationParamsJson pagination)
     {
-        await using var connection = await dbFunctions.CreateNewConnection();
+        await using var connection = await databaseQueryBuilder.CreateNewConnection();
 
         StringBuilder sql = new();
 
@@ -137,7 +137,7 @@ public class SchedulesRepository : ISchedulesRepository
 
     public async Task<Appointment?> FindById(long id)
     {
-        await using NpgsqlConnection connection = await dbFunctions.CreateNewConnection();
+        await using NpgsqlConnection connection = await databaseQueryBuilder.CreateNewConnection();
 
         string sql = "SELECT * FROM barber_shop_appointments WHERE id = @Id";
 
@@ -174,14 +174,14 @@ public class SchedulesRepository : ISchedulesRepository
             AppointmentEnd = appointmentEnd
         };
 
-        await using NpgsqlConnection connection = await dbFunctions.CreateNewConnection();
+        await using NpgsqlConnection connection = await databaseQueryBuilder.CreateNewConnection();
         var count = await connection.ExecuteScalarAsync<int>(sql, parameters);
 
         return count > 0;
     }
     public async Task Update(Appointment appointment)
     {
-        await using NpgsqlConnection connection = await dbFunctions.CreateNewConnection();
+        await using NpgsqlConnection connection = await databaseQueryBuilder.CreateNewConnection();
 
         StringBuilder sql = new();
 

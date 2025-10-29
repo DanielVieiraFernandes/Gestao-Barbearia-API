@@ -10,9 +10,9 @@ using System.Text;
 namespace GestaoDeBarbearia.Infraestructure.Repositories;
 public class SalesRepository : ISalesRepository
 {
-    private readonly DBFunctions dbFunctions;
+    private readonly DatabaseQueryBuilder dbFunctions;
     private readonly IProductsRepository productsRepository;
-    public SalesRepository(DBFunctions dbFunctions, IProductsRepository productsRepository)
+    public SalesRepository(DatabaseQueryBuilder dbFunctions, IProductsRepository productsRepository)
     {
         this.dbFunctions = dbFunctions;
         this.productsRepository = productsRepository;
@@ -49,8 +49,10 @@ public class SalesRepository : ISalesRepository
 
         StringBuilder sql = new();
 
-        sql.Append(DBFunctions.CreateInsertQuery<Sale>("barber_shop_sales", ["id", "createdat", "updatedat", "details"]));
+        sql.Append(DatabaseQueryBuilder.CreateInsertQuery<Sale>("barber_shop_sales", ["id", "createdat", "updatedat", "details"]));
         sql.Append(" RETURNING *; ");
+
+        // sql.Append("INSERT INTO barber_shop_sales (saledate, saletotal) VALUES (@SaleDate, @SaleTotal) ");
 
         var createdSale = await connection.QuerySingleAsync<Sale>(sql.ToString(), sale);
 
@@ -64,7 +66,7 @@ public class SalesRepository : ISalesRepository
 
         saleDetails.ForEach(sd => sd.SaleId = createdSale.Id);
 
-        sql.Append(DBFunctions.CreateInsertQuery<SaleDetails>("barber_shop_sale_details"));
+        sql.Append(DatabaseQueryBuilder.CreateInsertQuery<SaleDetails>("barber_shop_sale_details"));
         var linesCreatedSaleDetails = await connection.ExecuteAsync(sql.ToString(), saleDetails);
 
         if (linesCreatedSaleDetails != saleDetails.Count)
@@ -83,7 +85,7 @@ public class SalesRepository : ISalesRepository
 
         sql.Clear();
 
-        sql.Append(DBFunctions.CreateUpdateQuery<Product>("barber_shop_products"));
+        sql.Append(DatabaseQueryBuilder.CreateUpdateQuery<Product>("barber_shop_products"));
 
         var linesUpdatedProducts = await connection.ExecuteAsync(sql.ToString(), productsToUpdate);
 
@@ -138,7 +140,7 @@ public class SalesRepository : ISalesRepository
     {
         await using var connection = await dbFunctions.CreateNewConnection();
 
-        string sql = DBFunctions.CreateSelectByIdQuery("barber_shop_sales");
+        string sql = DatabaseQueryBuilder.CreateSelectByIdQuery("barber_shop_sales");
 
         var sale = await connection.QuerySingleOrDefaultAsync<Sale>(sql, new { Id = id });
 
@@ -152,7 +154,7 @@ public class SalesRepository : ISalesRepository
     {
         await using var connection = await dbFunctions.CreateNewConnection();
 
-        string sql = DBFunctions.CreateSelectByIdQuery("barber_shop_sale_details", "saleid");
+        string sql = DatabaseQueryBuilder.CreateSelectByIdQuery("barber_shop_sale_details", "saleid");
 
         var saleDetails = await connection.QueryAsync<SaleDetails>(sql, new { SaleId = saleId });
 

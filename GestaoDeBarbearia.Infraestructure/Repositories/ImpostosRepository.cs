@@ -8,8 +8,8 @@ using System.Text;
 namespace GestaoDeBarbearia.Infraestructure.Repositories;
 public class ImpostosRepository : IImpostosRepository
 {
-    private readonly DBFunctions dbFunctions;
-    public ImpostosRepository(DBFunctions dbFunctions)
+    private readonly DatabaseQueryBuilder dbFunctions;
+    public ImpostosRepository(DatabaseQueryBuilder dbFunctions)
     {
         this.dbFunctions = dbFunctions;
     }

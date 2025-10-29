@@ -6,8 +6,8 @@ using GestaoDeBarbearia.Infraestructure.Utils;
 namespace GestaoDeBarbearia.Infraestructure.Repositories;
 public class ServicesRepository : IServicesRepository
 {
-    private readonly DBFunctions dbFunctions;
-    public ServicesRepository(DBFunctions dbFunctions)
+    private readonly DatabaseQueryBuilder dbFunctions;
+    public ServicesRepository(DatabaseQueryBuilder dbFunctions)
     {
         this.dbFunctions = dbFunctions;
     }

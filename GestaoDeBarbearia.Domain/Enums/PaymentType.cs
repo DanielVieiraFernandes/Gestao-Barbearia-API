@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 
 namespace GestaoDeBarbearia.Domain.Enums;
+
 public enum PaymentType
 {
     [Description("Cartão de Crédito")]

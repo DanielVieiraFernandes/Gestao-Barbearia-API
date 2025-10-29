@@ -3,13 +3,14 @@ using Npgsql;
 using System.Reflection;
 
 namespace GestaoDeBarbearia.Infraestructure.Utils;
-public class DBFunctions
+public class DatabaseQueryBuilder
 {
     private readonly string connectionString;
-    public DBFunctions(IConfiguration configuration)
+    public DatabaseQueryBuilder(IConfiguration configuration)
     {
         connectionString = configuration.GetConnectionString("Connection")!;
     }
+
     public async Task<NpgsqlConnection> CreateNewConnection()
     {
         NpgsqlConnection connection = new(connectionString);
@@ -20,8 +21,7 @@ public class DBFunctions
 
     public static string CreateInsertQuery<T>(string tableName, List<string>? excludeProps = null)
     {
-        Type type = typeof(T);
-        PropertyInfo[] props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        PropertyInfo[] props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
         Dictionary<string, string> columnsAndParams = [];
 
@@ -42,27 +42,29 @@ public class DBFunctions
         return insertSQL;
     }
 
-    public static string CreateUpdateQuery<T>(string tableName, List<string>? excludeProps = null)
+    public static string CreateUpdateQuery<T>(string tableName, string conditionColumn = "Id", List<string>? excludeProps = null)
     {
         Type type = typeof(T);
         PropertyInfo[] props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
         List<string> setClauses = [];
+
         // Propriedades a serem excluídas da query
         excludeProps ??= ["id", "createdat"];
+
         foreach (var prop in props)
         {
             // Ignorar propriedades que estão na lista de exclusão
             if (excludeProps.Contains(prop.Name))
                 continue;
+
             setClauses.Add($"{prop.Name.ToLower()} = @{prop.Name}");
         }
-        string updateSQL = $"UPDATE {tableName} SET {string.Join(", ", setClauses)} WHERE id = @Id";
-        return updateSQL;
-    }
 
-    public static string CreateSelectAllQuery(string tableName)
-    {
-        return $"SELECT * FROM {tableName};";
+        string updateSQL = @$"UPDATE {tableName} SET {string.Join(", ", setClauses)} 
+        WHERE {conditionColumn.ToLower()} = @{conditionColumn}";
+
+        return updateSQL;
     }
 
     public static string CreateSelectByIdQuery(string tableName, string idColumn = "Id")
@@ -70,8 +72,8 @@ public class DBFunctions
         return $"SELECT * FROM {tableName} WHERE {idColumn.ToLower()} = @{idColumn}";
     }
 
-    public static string CreateDeleteQuery(string tableName)
+    public static string CreateDeleteQuery(string tableName, string conditionColumn)
     {
-        return $"DELETE FROM {tableName} WHERE id = @Id;";
+        return $"DELETE FROM {tableName} WHERE {conditionColumn.ToLower()} = @{conditionColumn};";
     }
 }

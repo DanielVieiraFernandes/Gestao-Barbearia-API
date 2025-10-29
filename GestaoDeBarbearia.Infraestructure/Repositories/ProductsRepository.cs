@@ -11,9 +11,9 @@ namespace GestaoDeBarbearia.Infraestructure.Repositories;
 public class ProductsRepository : IProductsRepository
 {
 
-    private DBFunctions dbFunctions;
+    private DatabaseQueryBuilder dbFunctions;
 
-    public ProductsRepository(DBFunctions dbFunctions)
+    public ProductsRepository(DatabaseQueryBuilder dbFunctions)
     {
         this.dbFunctions = dbFunctions;
     }
@@ -22,7 +22,7 @@ public class ProductsRepository : IProductsRepository
     {
         await using NpgsqlConnection connection = await dbFunctions.CreateNewConnection();
 
-        string sql = DBFunctions.CreateInsertQuery<Product>("barber_shop_products");
+        string sql = DatabaseQueryBuilder.CreateInsertQuery<Product>("barber_shop_products");
 
         await connection.ExecuteAsync(sql, product);
     }
@@ -62,7 +62,7 @@ public class ProductsRepository : IProductsRepository
     {
         await using NpgsqlConnection connection = await dbFunctions.CreateNewConnection();
 
-        string updateQuery = DBFunctions.CreateUpdateQuery<Product>("barber_shop_products");
+        string updateQuery = DatabaseQueryBuilder.CreateUpdateQuery<Product>("barber_shop_products");
 
         await connection.ExecuteAsync(updateQuery, product);
     }
