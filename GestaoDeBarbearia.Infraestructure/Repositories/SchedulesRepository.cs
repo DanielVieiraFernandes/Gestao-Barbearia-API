@@ -29,7 +29,18 @@ public class SchedulesRepository : ISchedulesRepository
 
         sql.Clear();
 
-        sql.Append(DatabaseQueryBuilder.CreateInsertQuery<Appointment>("barber_shop_appointments"));
+        List<string> propriedadesIgnorar = [
+            nameof(Appointment.Id),
+            nameof(Appointment.Services),
+            nameof(Appointment.CreatedAt),
+            nameof(Appointment.UpdatedAt)
+            ];
+
+        sql.Append(DatabaseQueryBuilder.CreateInsertQuery<Appointment>
+            (
+            "barber_shop_appointments",
+            propriedadesIgnorar)
+            );
         sql.Append(" RETURNING *");
 
         var result = await connection.QuerySingleOrDefaultAsync<Appointment>(sql.ToString(), appointment);
