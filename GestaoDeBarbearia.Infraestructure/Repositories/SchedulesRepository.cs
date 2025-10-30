@@ -30,10 +30,10 @@ public class SchedulesRepository : ISchedulesRepository
         sql.Clear();
 
         List<string> propriedadesIgnorar = [
-            nameof(Appointment.Id),
-            nameof(Appointment.Services),
-            nameof(Appointment.CreatedAt),
-            nameof(Appointment.UpdatedAt)
+            nameof(Appointment.Id).ToLower(),
+            nameof(Appointment.Services).ToLower(),
+            nameof(Appointment.CreatedAt).ToLower(),
+            nameof(Appointment.UpdatedAt).ToLower()
             ];
 
         sql.Append(DatabaseQueryBuilder.CreateInsertQuery<Appointment>
