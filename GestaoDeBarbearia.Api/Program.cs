@@ -27,7 +27,8 @@ builder.Services.AddApplication();
 
 // Faz a injeção de dependência das classes dentro do projeto de Infraestructure
 // Repositories
-builder.Services.AddInfra();
+// Segurança (criptografia, geração de tokens)
+builder.Services.AddInfra(builder.Configuration);
 
 var app = builder.Build();
 
