@@ -21,4 +21,15 @@ public class EmployeesRepository : IEmployeesRepository
 
         await connection.ExecuteAsync(sql, employee);
     }
+
+    public async Task<Employee?> GetByEmail(string email)
+    {
+        await using var connection = await databaseQueryBuilder.CreateNewConnection();
+
+        string sql = DatabaseQueryBuilder.CreateSelectByIdQuery(TABLE_NAME, nameof(Employee.Email));
+
+        var result = await connection.QueryFirstOrDefaultAsync<Employee?>(sql, new { Email = email });
+
+        return result;
+    }
 }

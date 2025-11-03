@@ -39,5 +39,6 @@ public static class DependecyInjectionExtension
 
         // Casos de uso de funcionários
         services.AddScoped<RegisterEmployeeUseCase>();
+        services.AddScoped<DoEmployeeLoginUseCase>();
     }
 }
