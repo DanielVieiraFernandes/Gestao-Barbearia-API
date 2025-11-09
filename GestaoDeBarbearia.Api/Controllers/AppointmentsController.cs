@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GestaoDeBarbearia.Api.Controllers;
 
+/// <summary>
+/// 
+/// </summary>
 [Route("api/[controller]")]
 [ApiController]
 public class AppointmentsController : ControllerBase
@@ -41,6 +44,36 @@ public class AppointmentsController : ControllerBase
     [HttpPatch("{appointmentid:long}/confirm")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> ConfirmAppointment([FromServices] ConfirmScheduleUseCase useCase, [FromRoute] long appointmentid)
+    {
+        await useCase.Execute(appointmentid);
+
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Este endpoint rejeita um agendamento pendente,<br/> alterando seu status para "rejeitado".<br/>
+    /// </summary>
+    /// <param name="useCase"></param>
+    /// <param name="appointmentid"></param>
+    /// <returns></returns>
+    [HttpPatch("{appointmentid:long}/reject")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> RejectAppointment([FromServices] RejectAnAppointmentUseCase useCase, [FromRoute] long appointmentid)
+    {
+        await useCase.Execute(appointmentid);
+
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Este endpoint cancela um agendamento existente, alterando seu status para "cancelado".<br/>
+    /// </summary>
+    /// <param name="useCase"></param>
+    /// <param name="appointmentid"></param>
+    /// <returns></returns>
+    [HttpPatch("{appointmentid:long}/canceled")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> CanceledAppointment([FromServices] CanceledAnAppointmentUseCase useCase, [FromRoute] long appointmentid)
     {
         await useCase.Execute(appointmentid);
 

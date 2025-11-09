@@ -12,4 +12,10 @@ public enum AppointmentStatus
 
     [Description("Atendimento concluído")]
     Completed = 3,
+
+    [Description("Agendamento rejeitado")]
+    Rejected = 4,
+
+    [Description("Agendamento cancelado")]
+    Canceled = 5
 }
