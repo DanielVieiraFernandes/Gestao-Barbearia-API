@@ -8,7 +8,7 @@ public static class EnumsExtensionMethods
     {
         var description = enumValue.ToString();
         var fieldInfo = enumValue.GetType().GetField(description);
-
+            
         if (fieldInfo != null)
         {
             var attributes = fieldInfo.GetCustomAttributes<DescriptionAttribute>(true);

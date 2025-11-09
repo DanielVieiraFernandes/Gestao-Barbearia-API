@@ -63,17 +63,14 @@ public class SchedulesRepository : ISchedulesRepository
         await connection.ExecuteAsync(sql.ToString());
     }
 
-    public async Task<List<Appointment>> FilterByMonth(DateOnly month)
+    public async Task<List<Appointment>> FilterByMonth(DateTime startDate, DateTime endDate)
     {
         await using var connection = await databaseQueryBuilder.CreateNewConnection();
 
         StringBuilder sql = new();
 
-        DateTime startDate = new(month.Year, month.Month, 1);
-        DateTime endDate = new(month.Year, month.Month, DateTime.DaysInMonth(month.Year, month.Month));
-
-        sql.Append("SELECT * FROM barber_shop_appointments WHERE (appointmentdatetime >= @StartDate ");
-        sql.Append("AND appointmentdatetime <= @EndDate) ");
+        sql.Append("SELECT * FROM barber_shop_appointments WHERE (appointmentdatetime BETWEEN @StartDate ");
+        sql.Append("AND @EndDate) ");
         sql.Append($"AND status = {(int)AppointmentStatus.Completed}");
 
         var appointments = await connection.QueryAsync<Appointment>(sql.ToString(), new

@@ -25,19 +25,16 @@ public class GenerateBillingReportUseCase
         this.expensesRepository = expensesRepository;
     }
 
-    public async Task<byte[]> Execute(DateOnly month)
+    public async Task<byte[]> Execute(DateTime startDate, DateTime endDate)
     {
-        List<Appointment> appointments = await schedulesRepository.FilterByMonth(month);
-        List<Sale> sales = await salesRepository.FilterSaleAndDetailsByMonth(month);
+        List<Appointment> appointments = await schedulesRepository.FilterByMonth(startDate, endDate);
+        List<Sale> sales = await salesRepository.FilterSaleAndDetailsByMonth(startDate, endDate);
 
         decimal totalBillingServices = (decimal)appointments.Sum(a => a.ServicePrice) / 100;
         decimal totalBillingSales = (decimal)sales.Sum(s => s.SaleTotal) / 100;
 
         ImpostoSimplesNacional impostoProduct = await impostosRepository.GetByType(FiscalType.Product, totalBillingSales);
         ImpostoSimplesNacional impostoService = await impostosRepository.GetByType(FiscalType.Service, totalBillingServices);
-
-        DateTime startDate = new(year: month.Year, month: month.Month, day: 1);
-        DateTime endDate = new(year: month.Year, month: month.Month, day: DateTime.DaysInMonth(month.Year, month.Month));
 
         decimal totalExpensesAmount = await expensesRepository.GetTotalAmount(startDate, endDate);
 

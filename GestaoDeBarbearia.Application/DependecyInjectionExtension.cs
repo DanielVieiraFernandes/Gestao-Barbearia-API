@@ -17,6 +17,8 @@ public static class DependecyInjectionExtension
         services.AddScoped<FetchAppointmentsUseCase>();
         services.AddScoped<MarkServiceAsCompletedUseCase>();
         services.AddScoped<GetAppointmentByIdUseCase>();
+        services.AddScoped<RejectAnAppointmentUseCase>();
+        services.AddScoped<CanceledAnAppointmentUseCase>();
 
         // Casos de uso de produtos
         services.AddScoped<CreateProductUseCase>();

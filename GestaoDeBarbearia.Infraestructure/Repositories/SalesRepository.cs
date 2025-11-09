@@ -102,18 +102,15 @@ public class SalesRepository : ISalesRepository
         return createdSale;
     }
 
-    public async Task<List<Sale>> FilterSaleAndDetailsByMonth(DateOnly month)
+    public async Task<List<Sale>> FilterSaleAndDetailsByMonth(DateTime startDate, DateTime endDate)
     {
         await using var connection = await dbFunctions.CreateNewConnection();
-
-        DateTime startDate = new(month.Year, month.Month, 1);
-        DateTime endDate = new(month.Year, month.Month, DateTime.DaysInMonth(month.Year, month.Month));
 
         StringBuilder sql = new();
 
         sql.Append($"SELECT s.*, sd.* FROM barber_shop_sales AS s INNER JOIN ");
         sql.Append("barber_shop_sale_details AS sd ON sd.saleid = s.id ");
-        sql.Append("WHERE s.saledate >= @StartDate AND s.saledate <= @EndDate ");
+        sql.Append("WHERE s.saledate BETWEEN @StartDate AND s.saledate");
 
         Dictionary<long, Sale> salesDictionary = [];
 
